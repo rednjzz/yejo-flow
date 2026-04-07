@@ -1,8 +1,9 @@
-import { Link } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import { BookOpen, Folder, LayoutGrid } from "lucide-react"
 
 import { NavFooter } from "@/components/nav-footer"
 import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -40,6 +41,8 @@ const footerNavItems: NavItem[] = [
 ]
 
 export function AppSidebar() {
+  const { sidebar_projects = [] } = usePage().props as { sidebar_projects?: { id: number; project_name: string }[] }
+
   return (
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
@@ -56,6 +59,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <NavMain items={mainNavItems} />
+        <NavProjects projects={sidebar_projects} />
       </SidebarContent>
 
       <SidebarFooter>

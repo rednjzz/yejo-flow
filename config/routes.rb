@@ -16,6 +16,14 @@ Rails.application.routes.draw do
 
   get :dashboard, to: "dashboard#index"
 
+  resources :projects do
+    resources :contracts, only: [:index, :create], module: :projects
+  end
+  resources :contracts, only: [:show, :update, :destroy] do
+    resources :contract_details, only: [:create], module: :contracts
+  end
+  resources :contract_details, only: [:update, :destroy]
+
   namespace :settings do
     resource :profile, only: [:show, :update]
     resource :password, only: [:show, :update]

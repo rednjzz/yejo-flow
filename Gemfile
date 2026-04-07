@@ -83,4 +83,7 @@ group :test do
   # Synchronize Capybara commands with application JavaScript and AJAX requests
   gem "capybara-lockstep"
   gem "selenium-webdriver"
+
+  # One-liners to test common Rails functionality
+  gem "shoulda-matchers"
 end
