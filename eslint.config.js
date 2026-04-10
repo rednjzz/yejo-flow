@@ -1,8 +1,7 @@
 import pluginJs from "@eslint/js"
+import eslintReact from "@eslint-react/eslint-plugin"
 import prettierConfig from "eslint-config-prettier/flat"
-import importPlugin from "eslint-plugin-import"
-import pluginReact from "eslint-plugin-react"
-import reactHooks from "eslint-plugin-react-hooks"
+import importPlugin from "eslint-plugin-import-x"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
@@ -11,11 +10,6 @@ export default [
   { files: ["app/frontend/**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { ignores: ["app/frontend/routes/*"] },
   {
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
       parserOptions: {
@@ -25,19 +19,27 @@ export default [
     },
   },
   pluginJs.configs.recommended,
-  reactHooks.configs.flat.recommended,
   ...tseslint.configs.stylisticTypeChecked,
   ...tseslint.configs.recommendedTypeChecked,
-  pluginReact.configs.flat.recommended,
-  pluginReact.configs.flat["jsx-runtime"],
+  {
+    ...eslintReact.configs["recommended-type-checked"],
+    rules: {
+      ...eslintReact.configs["recommended-type-checked"].rules,
+      "@eslint-react/no-array-index-key": "off",
+      "@eslint-react/no-context-provider": "off",
+      "@eslint-react/no-use-context": "off",
+      "@eslint-react/use-state": "off",
+      "@eslint-react/naming-convention-ref-name": "off",
+    },
+  },
   prettierConfig,
   {
     ...importPlugin.flatConfigs.recommended,
     ...importPlugin.flatConfigs.typescript,
     ...importPlugin.flatConfigs.react,
-    settings: { "import/resolver": { typescript: {} } },
+    settings: { "import-x/resolver": { typescript: {} } },
     rules: {
-      "import/order": [
+      "import-x/order": [
         "error",
         {
           pathGroups: [
@@ -52,8 +54,8 @@ export default [
           alphabetize: { order: "asc" },
         },
       ],
-      "import/first": "error",
-      "import/extensions": [
+      "import-x/first": "error",
+      "import-x/extensions": [
         "error",
         "always",
         {
