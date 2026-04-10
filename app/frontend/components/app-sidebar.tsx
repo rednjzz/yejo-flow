@@ -26,9 +26,10 @@ const mainNavItems: NavItem[] = [
   },
 ]
 
-
 export function AppSidebar() {
-  const { sidebar_projects = [] } = usePage().props as { sidebar_projects?: { id: number; project_name: string }[] }
+  const { sidebar_projects = [] } = usePage().props as {
+    sidebar_projects?: { id: number; project_name: string }[]
+  }
 
   return (
     <Sidebar collapsible="icon" variant="inset">

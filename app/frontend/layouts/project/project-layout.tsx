@@ -57,7 +57,7 @@ export default function ProjectLayout({
           </Link>
           <div>
             <h1 className="text-xl font-semibold">{project.project_name}</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {project.project_code} | {project.client_name} |{" "}
               {project.formatted_period}
             </p>

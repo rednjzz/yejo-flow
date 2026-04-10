@@ -19,11 +19,7 @@ import {
 import { projectPath, projectsPath } from "@/routes"
 import type { SidebarProject } from "@/types"
 
-export function NavProjects({
-  projects,
-}: {
-  projects: SidebarProject[]
-}) {
+export function NavProjects({ projects }: { projects: SidebarProject[] }) {
   const page = usePage()
   const isActive = page.url.startsWith("/projects")
 
@@ -48,7 +44,9 @@ export function NavProjects({
                 <SidebarMenuSubItem>
                   <SidebarMenuSubButton
                     asChild
-                    isActive={page.url === projectsPath() || page.url === "/projects"}
+                    isActive={
+                      page.url === projectsPath() || page.url === "/projects"
+                    }
                   >
                     <Link href={projectsPath()} prefetch>
                       전체 현장 목록
@@ -59,9 +57,7 @@ export function NavProjects({
                   <SidebarMenuSubItem key={project.id}>
                     <SidebarMenuSubButton
                       asChild
-                      isActive={page.url.startsWith(
-                        projectPath(project.id),
-                      )}
+                      isActive={page.url.startsWith(projectPath(project.id))}
                     >
                       <Link href={projectPath(project.id)} prefetch>
                         {project.project_name}

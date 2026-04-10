@@ -103,26 +103,26 @@ export default function ProjectsIndex({ projects }: Props) {
         <div className="rounded-lg border">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="h-10 px-3 text-left text-xs font-medium text-muted-foreground">
+              <tr className="bg-muted/50 border-b">
+                <th className="text-muted-foreground h-10 px-3 text-left text-xs font-medium">
                   현장코드
                 </th>
-                <th className="h-10 px-3 text-left text-xs font-medium text-muted-foreground">
+                <th className="text-muted-foreground h-10 px-3 text-left text-xs font-medium">
                   현장명
                 </th>
-                <th className="h-10 px-3 text-left text-xs font-medium text-muted-foreground">
+                <th className="text-muted-foreground h-10 px-3 text-left text-xs font-medium">
                   발주처
                 </th>
-                <th className="h-10 px-3 text-right text-xs font-medium text-muted-foreground">
+                <th className="text-muted-foreground h-10 px-3 text-right text-xs font-medium">
                   도급금액
                 </th>
-                <th className="h-10 px-3 text-left text-xs font-medium text-muted-foreground">
+                <th className="text-muted-foreground h-10 px-3 text-left text-xs font-medium">
                   공사기간
                 </th>
-                <th className="h-10 px-3 text-center text-xs font-medium text-muted-foreground">
+                <th className="text-muted-foreground h-10 px-3 text-center text-xs font-medium">
                   상태
                 </th>
-                <th className="h-10 px-3 text-right text-xs font-medium text-muted-foreground">
+                <th className="text-muted-foreground h-10 px-3 text-right text-xs font-medium">
                   기성률
                 </th>
               </tr>
@@ -132,7 +132,7 @@ export default function ProjectsIndex({ projects }: Props) {
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-3 py-8 text-center text-sm text-muted-foreground"
+                    className="text-muted-foreground px-3 py-8 text-center text-sm"
                   >
                     등록된 현장이 없습니다.
                   </td>
@@ -141,7 +141,7 @@ export default function ProjectsIndex({ projects }: Props) {
               {projects.map((project) => (
                 <tr
                   key={project.id}
-                  className="border-b transition-colors hover:bg-muted/50 cursor-pointer"
+                  className="hover:bg-muted/50 cursor-pointer border-b transition-colors"
                   onClick={() => router.visit(projectPath(project.id))}
                 >
                   <td className="px-3 py-2.5 text-sm font-medium">
@@ -150,19 +150,19 @@ export default function ProjectsIndex({ projects }: Props) {
                   <td className="px-3 py-2.5 text-sm">
                     {project.project_name}
                   </td>
-                  <td className="px-3 py-2.5 text-sm text-muted-foreground">
+                  <td className="text-muted-foreground px-3 py-2.5 text-sm">
                     {project.client_name}
                   </td>
-                  <td className="px-3 py-2.5 text-sm text-right tabular-nums">
+                  <td className="px-3 py-2.5 text-right text-sm tabular-nums">
                     {project.amount_in_billion}
                   </td>
-                  <td className="px-3 py-2.5 text-sm text-muted-foreground">
+                  <td className="text-muted-foreground px-3 py-2.5 text-sm">
                     {project.formatted_period}
                   </td>
                   <td className="px-3 py-2.5 text-center">
                     <ProjectStatusBadge status={project.status} />
                   </td>
-                  <td className="px-3 py-2.5 text-sm text-right tabular-nums">
+                  <td className="px-3 py-2.5 text-right text-sm tabular-nums">
                     {project.billing_rate}%
                   </td>
                 </tr>

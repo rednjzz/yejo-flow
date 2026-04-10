@@ -49,7 +49,7 @@ export default function ProjectShow({ project }: Props) {
         {/* Cost Breakdown - Placeholder */}
         <div className="mt-6 rounded-lg border p-6">
           <h3 className="mb-4 text-sm font-medium">원가 비목별 현황</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             원가 데이터가 등록되면 비목별 현황이 표시됩니다.
           </p>
         </div>
@@ -57,7 +57,7 @@ export default function ProjectShow({ project }: Props) {
         {/* Subcontract Summary - Placeholder */}
         <div className="mt-4 rounded-lg border p-6">
           <h3 className="mb-4 text-sm font-medium">하도급 현황</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             하도급 데이터가 등록되면 현황이 표시됩니다.
           </p>
         </div>

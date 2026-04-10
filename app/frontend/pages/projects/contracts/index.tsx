@@ -3,12 +3,7 @@ import { Plus } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -28,26 +23,15 @@ import {
 import AppLayout from "@/layouts/app-layout"
 import ProjectLayout from "@/layouts/project/project-layout"
 import { formatCurrency } from "@/lib/format"
-import {
-  projectContractsPath,
-  projectPath,
-  projectsPath,
-} from "@/routes"
-import type {
-  BreadcrumbItem,
-  ContractProps,
-  ProjectDetail,
-} from "@/types"
+import { projectContractsPath, projectPath, projectsPath } from "@/routes"
+import type { BreadcrumbItem, ContractProps, ProjectDetail } from "@/types"
 
 interface Props {
   project: ProjectDetail
   contracts: ContractProps[]
 }
 
-export default function ContractsIndex({
-  project,
-  contracts,
-}: Props) {
+export default function ContractsIndex({ project, contracts }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const breadcrumbs: BreadcrumbItem[] = [
@@ -151,7 +135,7 @@ export default function ContractsIndex({
 
           {/* Contract Cards */}
           {contracts.length === 0 && (
-            <div className="rounded-lg border p-8 text-center text-sm text-muted-foreground">
+            <div className="text-muted-foreground rounded-lg border p-8 text-center text-sm">
               등록된 계약이 없습니다.
             </div>
           )}
@@ -163,10 +147,10 @@ export default function ContractsIndex({
                   <CardTitle className="text-base">
                     {contract.type_label} - {contract.contract_no}
                   </CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
                     <span>계약일: {contract.contract_date}</span>
                     <span>|</span>
-                    <span className="font-medium text-foreground">
+                    <span className="text-foreground font-medium">
                       {formatCurrency(contract.contract_amount)}원
                     </span>
                   </div>
@@ -185,23 +169,23 @@ export default function ContractsIndex({
                   <div className="rounded-md border">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="h-9 px-3 text-left text-xs font-medium text-muted-foreground">
+                        <tr className="bg-muted/50 border-b">
+                          <th className="text-muted-foreground h-9 px-3 text-left text-xs font-medium">
                             공종
                           </th>
-                          <th className="h-9 px-3 text-left text-xs font-medium text-muted-foreground">
+                          <th className="text-muted-foreground h-9 px-3 text-left text-xs font-medium">
                             내역명
                           </th>
-                          <th className="h-9 px-3 text-center text-xs font-medium text-muted-foreground">
+                          <th className="text-muted-foreground h-9 px-3 text-center text-xs font-medium">
                             단위
                           </th>
-                          <th className="h-9 px-3 text-right text-xs font-medium text-muted-foreground">
+                          <th className="text-muted-foreground h-9 px-3 text-right text-xs font-medium">
                             수량
                           </th>
-                          <th className="h-9 px-3 text-right text-xs font-medium text-muted-foreground">
+                          <th className="text-muted-foreground h-9 px-3 text-right text-xs font-medium">
                             단가
                           </th>
-                          <th className="h-9 px-3 text-right text-xs font-medium text-muted-foreground">
+                          <th className="text-muted-foreground h-9 px-3 text-right text-xs font-medium">
                             금액
                           </th>
                         </tr>
@@ -246,13 +230,13 @@ export default function ContractsIndex({
                     </table>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     등록된 내역이 없습니다.
                   </p>
                 )}
 
                 {contract.description && (
-                  <p className="mt-3 text-sm text-muted-foreground">
+                  <p className="text-muted-foreground mt-3 text-sm">
                     {contract.description}
                   </p>
                 )}

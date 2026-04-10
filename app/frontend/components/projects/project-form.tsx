@@ -61,11 +61,7 @@ export function ProjectForm({
   const currentStatus = defaultValues?.status ?? "preparing"
 
   return (
-    <Form
-      method={method}
-      action={action}
-      className="space-y-6"
-    >
+    <Form method={method} action={action} className="space-y-6">
       {({ processing, errors }) => (
         <>
           <div className="grid gap-6 md:grid-cols-2">
@@ -211,10 +207,7 @@ export function ProjectForm({
             {isEdit && (
               <div className="space-y-2">
                 <Label htmlFor="status">상태</Label>
-                <Select
-                  name="project[status]"
-                  defaultValue={currentStatus}
-                >
+                <Select name="project[status]" defaultValue={currentStatus}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
