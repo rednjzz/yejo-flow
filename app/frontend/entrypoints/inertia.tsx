@@ -53,12 +53,6 @@ void createInertiaApp({
       forceIndicesArrayFormatInFormData: false,
       withAllErrors: true,
     },
-    future: {
-      useScriptElementForInitialPage: true,
-      useDataInertiaHeadAttribute: true,
-      useDialogForErrorModal: true,
-      preserveEqualProps: true,
-    },
   },
 
   progress: {
