@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label"
 import { usersPath } from "@/routes"
 
 export default function DeleteUser() {
-  const passwordInput = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="space-y-6">
@@ -53,7 +53,7 @@ export default function DeleteUser() {
               options={{
                 preserveScroll: true,
               }}
-              onError={() => passwordInput.current?.focus()}
+              onError={() => passwordRef.current?.focus()}
               resetOnSuccess
               className="space-y-6"
             >
@@ -68,7 +68,7 @@ export default function DeleteUser() {
                       id="password_challenge"
                       type="password"
                       name="password_challenge"
-                      ref={passwordInput}
+                      ref={passwordRef}
                       placeholder="Password"
                       autoComplete="current-password"
                     />

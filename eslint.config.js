@@ -21,17 +21,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.stylisticTypeChecked,
   ...tseslint.configs.recommendedTypeChecked,
-  {
-    ...eslintReact.configs["recommended-type-checked"],
-    rules: {
-      ...eslintReact.configs["recommended-type-checked"].rules,
-      "@eslint-react/no-array-index-key": "off",
-      "@eslint-react/no-context-provider": "off",
-      "@eslint-react/no-use-context": "off",
-      "@eslint-react/use-state": "off",
-      "@eslint-react/naming-convention-ref-name": "off",
-    },
-  },
+  eslintReact.configs["recommended-type-checked"],
   prettierConfig,
   {
     ...importPlugin.flatConfigs.recommended,
