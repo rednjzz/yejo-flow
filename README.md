@@ -1,72 +1,95 @@
-# Inertia Rails React Starter Kit
+# Flow — 건설현장 관리 시스템
 
-A modern full-stack starter application with Rails backend and React frontend using Inertia.js based on the [Laravel Starter Kit](https://github.com/laravel/react-starter-kit).
+건설현장의 프로젝트 진행 상황을 체계적으로 관리하고, 현장 활동을 기록·추적하는 사내 웹 애플리케이션입니다.
 
-## Features
+## 핵심 기능
 
-- [Inertia Rails](https://inertia-rails.dev) & [Vite Rails](https://vite-ruby.netlify.app) setup
-- [React](https://react.dev) frontend with TypeScript & [shadcn/ui](https://ui.shadcn.com) component library
-- User authentication system (based on [Authentication Zero](https://github.com/lazaronixon/authentication-zero))
-- [Kamal](https://kamal-deploy.org/) for deployment
-- Optional SSR support
+- **프로젝트(현장) 관리** — 현장 등록/수정/조회, 상태 관리 (준비중 → 진행중 → 준공 → 하자보수 → 종료)
+- **도급계약 관리** — 원도급/변경계약 등록, 도급내역 관리
+- **사용자 인증** — 회원가입, 로그인, 이메일 인증, 비밀번호 재설정
+- **역할 기반 접근** — 관리자, 본사 공무팀장/공무, 현장 소장/실무
 
-See also:
-- [Svelte Starter Kit](https://github.com/inertia-rails/svelte-starter-kit) for Inertia Rails with Svelte
-- [Vue Starter Kit](https://github.com/inertia-rails/vue-starter-kit) for Inertia Rails with Vue
+## 기술 스택
 
-<a href="https://evilmartians.com/?utm_source=inertia-rails-react-starter-kit&utm_campaign=project_page">
-<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Built by Evil Martians" width="236" height="54">
-</a>
+| 영역 | 기술 |
+|------|------|
+| Backend | Ruby 3.4, Rails 8.1, SQLite |
+| Frontend | React 19, TypeScript, Inertia.js 3, Tailwind CSS 4 |
+| UI 컴포넌트 | shadcn/ui (Radix UI) |
+| 인증 | `has_secure_password` (Rails 8 built-in) |
+| Background Jobs | Solid Queue |
+| Assets | Vite 8 |
+| Testing | RSpec, FactoryBot, Shoulda Matchers, Capybara |
+| Linting | ESLint 10, RuboCop, Prettier |
+| 배포 | Kamal 2 + Thruster |
 
-## Setup
+## 프로젝트 구조
 
-1. Clone this repository
-2. Setup dependencies & run the server:
-   ```bash
-   bin/setup
-   ```
-3. Open http://localhost:3000
+```
+app/
+├── controllers/     # Inertia 응답. 서비스에 위임
+├── models/          # 영속성: 유효성 검사, 연관관계, 스코프
+├── services/        # 비즈니스 로직 (Projects::CreateService 등)
+├── presenters/      # Inertia props 직렬화 (SimpleDelegator)
+├── frontend/
+│   ├── components/  # React 컴포넌트 (shadcn/ui 기반)
+│   ├── pages/       # Inertia 페이지
+│   ├── layouts/     # 레이아웃 (AppLayout, AuthLayout, ProjectLayout)
+│   ├── lib/         # 유틸리티 (format, project-status)
+│   └── types/       # TypeScript 타입 정의
+spec/
+├── models/          # 모델 스펙
+├── services/        # 서비스 스펙
+├── presenters/      # 프레젠터 스펙
+└── requests/        # 요청 스펙
+```
 
-## Enabling SSR
+## 시작하기
 
-This starter kit comes with optional SSR support. To enable it, follow these steps:
+### 요구사항
 
-1. Open `app/frontend/entrypoints/inertia.ts` and uncomment part of the `setup` function:
-   ```ts
-   // Uncomment the following to enable SSR hydration:
-   // if (el.hasChildNodes()) {
-   //   hydrateRoot(el, createElement(App, props))
-   //   return
-   // }
-   ```
-2. Open `config/deploy.yml` and uncomment several lines:
-   ```yml
-   servers:
-     # Uncomment to enable SSR:
-     # vite_ssr:
-     #   hosts:
-     #     - 192.168.0.1
-     #   cmd: bundle exec vite ssr
-     #   options:
-     #     network-alias: vite_ssr
-      
-   # ...
-      
-   env:
-     clear:
-       # Uncomment to enable SSR:
-       # INERTIA_SSR_ENABLED: true
-       # INERTIA_SSR_URL: "http://vite_ssr:13714"
-      
-   # ...
-      
-   builder:
-     # Uncomment to enable SSR:
-     # dockerfile: Dockerfile-ssr
-   ```
-   
-That's it! Now you can deploy your app with SSR support.
+- Ruby 3.4+
+- Node.js 22+
+- SQLite 3
 
-## License
+### 설치
 
-The project is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+```bash
+bin/setup
+```
+
+### 개발 서버
+
+```bash
+bin/dev
+```
+
+http://localhost:3000 에서 확인할 수 있습니다.
+
+### 시드 데이터
+
+```bash
+bin/rails db:seed
+```
+
+- 관리자: `admin@example.com` / `Password1234!`
+- 샘플 프로젝트 4개, 발주처 4개, 공종 6개
+
+### 테스트
+
+```bash
+bundle exec rspec              # 전체 테스트
+bundle exec rspec spec/models/ # 모델만
+```
+
+### 린트
+
+```bash
+npm run lint                   # ESLint
+npm run check                  # TypeScript 타입 체크
+bundle exec rubocop -a         # RuboCop
+```
+
+## 라이선스
+
+MIT License
