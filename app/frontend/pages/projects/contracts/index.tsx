@@ -408,9 +408,7 @@ function PaymentTermsTable({ contract }: { contract: ContractProps }) {
                 {term.rate != null ? `${term.rate}%` : "—"}
               </td>
               <td className="px-3 py-2 text-right text-sm tabular-nums">
-                {term.amount != null
-                  ? `${formatCurrency(term.amount)}원`
-                  : "—"}
+                {term.amount != null ? `${formatCurrency(term.amount)}원` : "—"}
               </td>
               <td className="text-muted-foreground px-3 py-2 text-sm">
                 {term.condition ?? "—"}
@@ -477,9 +475,7 @@ function ContractItemsTable({ contract }: { contract: ContractProps }) {
                 <tr key={item.id} className="border-b">
                   <td className="px-3 py-2 text-sm">{item.work_type_name}</td>
                   <td className="px-3 py-2 text-sm">{item.item_name}</td>
-                  <td className="px-3 py-2 text-center text-sm">
-                    {item.unit}
-                  </td>
+                  <td className="px-3 py-2 text-center text-sm">{item.unit}</td>
                   <td className="px-3 py-2 text-right text-sm tabular-nums">
                     {item.quantity}
                   </td>
@@ -508,9 +504,7 @@ function ContractItemsTable({ contract }: { contract: ContractProps }) {
           </table>
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          등록된 내역이 없습니다.
-        </p>
+        <p className="text-muted-foreground text-sm">등록된 내역이 없습니다.</p>
       )}
     </>
   )
@@ -577,7 +571,7 @@ function NoteBlock({ title, text }: { title: string; text: string }) {
   return (
     <div>
       <h4 className="mb-1 text-sm font-medium">{title}</h4>
-      <p className="text-muted-foreground whitespace-pre-wrap text-sm">
+      <p className="text-muted-foreground text-sm whitespace-pre-wrap">
         {text}
       </p>
     </div>
@@ -611,4 +605,3 @@ function CollapsibleSection({
     </Collapsible>
   )
 }
-

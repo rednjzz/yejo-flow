@@ -189,10 +189,12 @@ export default function ProjectsIndex({
 
       {/* 신규 현장 등록 Sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
+        <SheetContent side="right" className="overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>신규 현장 등록</SheetTitle>
-            <SheetDescription>새 현장의 기본 정보를 입력합니다.</SheetDescription>
+            <SheetDescription>
+              새 현장의 기본 정보를 입력합니다.
+            </SheetDescription>
           </SheetHeader>
           <Form
             method="post"
@@ -243,13 +245,10 @@ export default function ProjectsIndex({
 
                 <div className="space-y-2">
                   <Label htmlFor="site_address">현장 소재지</Label>
-                  <Input
-                    id="site_address"
-                    name="project[site_address]"
-                  />
+                  <Input id="site_address" name="project[site_address]" />
                 </div>
 
-                <div className="grid gap-4 grid-cols-2">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="start_date">
                       착공일 <span className="text-destructive">*</span>

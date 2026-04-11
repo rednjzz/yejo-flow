@@ -2,8 +2,10 @@ import { useCallback, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
-interface CurrencyInputProps
-  extends Omit<React.ComponentProps<"input">, "type" | "value" | "onChange"> {
+interface CurrencyInputProps extends Omit<
+  React.ComponentProps<"input">,
+  "type" | "value" | "onChange"
+> {
   /** hidden input의 name (서버 전송용) */
   name: string
   /** 숫자 값 */

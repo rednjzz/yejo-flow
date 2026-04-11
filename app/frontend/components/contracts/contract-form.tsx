@@ -88,27 +88,28 @@ export function ContractForm({
 
   // 결제조건 관리
   const initialTerms = toRows(defaultValues?.contract_payment_terms)
-  const [paymentTerms, setPaymentTerms] = useState<PaymentTermRow[]>(initialTerms)
+  const [paymentTerms, setPaymentTerms] =
+    useState<PaymentTermRow[]>(initialTerms)
 
   // 지급방식: 기존 중도금의 interim_method로 초기값 결정
   const existingInterim = initialTerms.find((t) => t.term_type === "interim")
-  const [interimMethod, setInterimMethod] = useState<"milestone" | "monthly_billing">(
-    (existingInterim?.interim_method as "milestone" | "monthly_billing") || "milestone",
+  const [interimMethod, setInterimMethod] = useState<
+    "milestone" | "monthly_billing"
+  >(
+    (existingInterim?.interim_method as "milestone" | "monthly_billing") ||
+      "milestone",
   )
 
-  const handleInterimMethodChange = useCallback(
-    (method: string) => {
-      const newMethod = method as "milestone" | "monthly_billing"
-      setInterimMethod(newMethod)
-      // 기존 중도금 항목들의 interim_method를 일괄 변경
-      setPaymentTerms((prev) =>
-        prev.map((t) =>
-          t.term_type === "interim" ? { ...t, interim_method: newMethod } : t,
-        ),
-      )
-    },
-    [],
-  )
+  const handleInterimMethodChange = useCallback((method: string) => {
+    const newMethod = method as "milestone" | "monthly_billing"
+    setInterimMethod(newMethod)
+    // 기존 중도금 항목들의 interim_method를 일괄 변경
+    setPaymentTerms((prev) =>
+      prev.map((t) =>
+        t.term_type === "interim" ? { ...t, interim_method: newMethod } : t,
+      ),
+    )
+  }, [])
 
   const addPaymentTerm = useCallback(
     (termType: string) => {
@@ -130,8 +131,14 @@ export function ContractForm({
           term_type: termType,
           seq: nextSeq,
           interim_method: termType === "interim" ? interimMethod : "",
-          rate: termType === "interim" && interimMethod === "monthly_billing" ? "" : "",
-          amount: termType === "interim" && interimMethod === "monthly_billing" ? "" : "",
+          rate:
+            termType === "interim" && interimMethod === "monthly_billing"
+              ? ""
+              : "",
+          amount:
+            termType === "interim" && interimMethod === "monthly_billing"
+              ? ""
+              : "",
           condition:
             termType === "interim" && interimMethod === "monthly_billing"
               ? "매월 기성 청구 승인 후"
@@ -269,7 +276,9 @@ export function ContractForm({
               <CurrencyInput
                 id="vat_amount"
                 name="contract[vat_amount]"
-                value={vatManual && vatValue !== "" ? vatValue : autoVat.toString()}
+                value={
+                  vatManual && vatValue !== "" ? vatValue : autoVat.toString()
+                }
                 onValueChange={handleVatChange}
                 placeholder="자동 계산 (10%)"
               />

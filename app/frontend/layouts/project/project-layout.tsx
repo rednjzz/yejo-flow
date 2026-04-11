@@ -85,11 +85,7 @@ export default function ProjectLayout({
         </div>
 
         {formData && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setEditOpen(true)}
-          >
+          <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
             <Pencil className="size-4" />
             수정
           </Button>
@@ -136,7 +132,7 @@ export default function ProjectLayout({
       {/* 수정 Sheet */}
       {formData && clients && managers && statuses && (
         <Sheet open={editOpen} onOpenChange={setEditOpen}>
-          <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
+          <SheetContent side="right" className="overflow-y-auto sm:max-w-md">
             <SheetHeader>
               <SheetTitle>현장 정보 수정</SheetTitle>
               <SheetDescription>{project.project_name}</SheetDescription>
