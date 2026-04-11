@@ -333,57 +333,63 @@ export function ContractForm({
             </div>
 
             {/* 항목 추가 버튼 */}
-            <div className="flex gap-1">
+            <div className="flex gap-2">
               {!hasAdvance && (
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => addPaymentTerm("advance")}
                 >
                   <Plus className="size-3" />
-                  착수금
+                  착수금 추가
                 </Button>
               )}
               {interimMethod === "milestone" && (
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => addPaymentTerm("interim")}
                 >
                   <Plus className="size-3" />
-                  중도금
+                  중도금 추가
                 </Button>
               )}
               {interimMethod === "monthly_billing" && !hasInterim && (
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => addPaymentTerm("interim")}
                 >
                   <Plus className="size-3" />
-                  중도금 (기성)
+                  중도금 (기성) 추가
                 </Button>
               )}
               {!hasFinal && (
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => addPaymentTerm("final")}
                 >
                   <Plus className="size-3" />
-                  잔금
+                  잔금 추가
                 </Button>
               )}
             </div>
 
-            {paymentTerms.length === 0 && (
-              <p className="text-muted-foreground text-sm">
-                등록된 결제조건이 없습니다.
-              </p>
+            {paymentTerms.filter((t) => !t._destroy).length === 0 && (
+              <div className="rounded-md border border-dashed p-6 text-center">
+                <p className="text-muted-foreground mb-3 text-sm">
+                  등록된 결제조건이 없습니다.
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  위의 착수금, 중도금, 잔금 버튼을 클릭하여 결제조건을
+                  추가하세요.
+                </p>
+              </div>
             )}
 
             {paymentTerms.map((term, index) => {
