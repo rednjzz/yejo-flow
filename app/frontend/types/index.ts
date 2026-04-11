@@ -115,6 +115,29 @@ export interface StatusOption {
   label: string
 }
 
+export interface ContractPaymentTermProps {
+  id: number
+  term_type: string
+  display_label: string
+  seq: number
+  interim_method: string | null
+  rate: number | null
+  amount: number | null
+  condition: string | null
+  due_date: string | null
+  paid_date: string | null
+  paid_amount: number | null
+  sort_order: number
+}
+
+export interface ContractFileProps {
+  id: number
+  filename: string
+  byte_size: number
+  content_type: string
+  url: string
+}
+
 export interface ContractProps {
   id: number
   contract_no: string
@@ -123,10 +146,22 @@ export interface ContractProps {
   change_seq: number | null
   contract_date: string
   contract_amount: number
+  supply_amount: number
+  vat_amount: number
   change_amount: number | null
   description: string | null
+  defect_liability_months: number | null
+  defect_warranty_rate: number | null
+  defect_warranty_amount: number | null
+  late_penalty_rate: number | null
+  late_penalty_cap_rate: number | null
+  max_late_penalty: number | null
+  period_note: string | null
+  special_conditions: string | null
   details_total: number
   amount_mismatch: boolean
+  contract_payment_terms: ContractPaymentTermProps[]
+  contract_files: ContractFileProps[]
   contract_items: ContractItemProps[]
 }
 
@@ -140,6 +175,25 @@ export interface ContractItemProps {
   unit_price: number | null
   amount: number
   sort_order: number
+}
+
+export interface ContractFormData {
+  id?: number
+  contract_no: string
+  contract_type: string
+  change_seq: number | null
+  contract_date: string
+  supply_amount: number | string
+  vat_amount: number | string
+  change_amount: number | string
+  description: string
+  defect_liability_months: number | string
+  defect_warranty_rate: number | string
+  late_penalty_rate: number | string
+  late_penalty_cap_rate: number | string
+  period_note: string
+  special_conditions: string
+  contract_files: ContractFileProps[]
 }
 
 export interface SidebarProject {

@@ -5,7 +5,9 @@ module Projects
     before_action :set_project
 
     def index
-      contracts = @project.contracts.includes(:contract_items).order(:contract_type, :change_seq)
+      contracts = @project.contracts
+        .includes(:contract_items, :contract_payment_terms, contract_files_attachments: :blob)
+        .order(:contract_type, :change_seq)
       work_types = WorkType.active.ordered.select(:id, :work_type_name)
 
       render inertia: {
@@ -34,7 +36,12 @@ module Projects
     def contract_params
       params.expect(contract: [
         :contract_no, :contract_type, :change_seq,
-        :contract_date, :contract_amount, :change_amount, :description
+        :contract_date, :supply_amount, :vat_amount,
+        :change_amount, :description,
+        :defect_liability_months, :defect_warranty_rate,
+        :late_penalty_rate, :late_penalty_cap_rate,
+        :period_note, :special_conditions,
+        contract_files: []
       ])
     end
   end
