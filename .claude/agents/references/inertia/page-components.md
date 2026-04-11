@@ -129,7 +129,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Lazy Loading Props
+## Optional Props (Partial Reload Only)
 
 ```ruby
 # app/controllers/users_controller.rb
@@ -139,8 +139,8 @@ def show
 
   render inertia: 'Users/Show', props: {
     user: UserPresenter.new(user).to_props,
-    # Lazy props are only loaded when the component requests them
-    activity_log: InertiaRails.lazy { ActivityLog.for_user(user).recent.as_json }
+    # Optional props are only loaded when explicitly requested via partial reload
+    activity_log: InertiaRails.optional { ActivityLog.for_user(user).recent.as_json }
   }
 end
 ```
@@ -279,4 +279,91 @@ export default function Show({ user }: Props) {
 
 // Simple title-only usage
 <Head title={`${user.name} - My App`} />
+```
+
+## Always Props
+
+Props that must be included in every response, including partial reloads:
+
+```ruby
+render inertia: 'Dashboard/Show', props: {
+  user: UserPresenter.new(current_user).to_props,
+  permissions: InertiaRails.always { policy_props(current_user) }
+}
+```
+
+## Merge Props (Infinite Scroll)
+
+Merge new data into existing props instead of replacing:
+
+```ruby
+# app/controllers/posts_controller.rb
+def index
+  render inertia: 'Posts/Index', props: {
+    posts: InertiaRails.merge { paginated_posts(params[:page]) }
+  }
+end
+```
+
+```tsx
+// Component requests next page via partial reload
+router.reload({ only: ['posts'], data: { page: nextPage } })
+// New posts are appended to existing posts array, not replaced
+```
+
+## WhenVisible Component
+
+Load data when an element scrolls into the viewport:
+
+```ruby
+# Controller
+render inertia: 'Posts/Index', props: {
+  posts: posts.map { |p| serialize(p) },
+  comments: InertiaRails.optional { Comment.recent.as_json }
+}
+```
+
+```tsx
+import { WhenVisible } from '@inertiajs/react'
+
+// Triggers a partial reload for "comments" when scrolled into view
+<WhenVisible data="comments" fallback={<Spinner />}>
+  <CommentSection comments={comments!} />
+</WhenVisible>
+```
+
+## Polling with usePoll
+
+Keep data fresh with automatic polling:
+
+```tsx
+import { usePoll } from '@inertiajs/react'
+
+// Refresh specific props at an interval (ms)
+usePoll(5000, { only: ['notifications'] })
+
+// Poll all props
+usePoll(10000)
+```
+
+## Prefetching
+
+Prefetch pages on hover or mount for instant navigation:
+
+```tsx
+import { Link } from '@inertiajs/react'
+
+// Prefetch on hover (default)
+<Link href="/users" prefetch>Users</Link>
+
+// Prefetch on mount (for high-priority links)
+<Link href="/dashboard" prefetch="mount">Dashboard</Link>
+```
+
+```tsx
+import { usePrefetch } from '@inertiajs/react'
+
+// Programmatic prefetching
+const { prefetch } = usePrefetch()
+prefetch('/users/1')
 ```

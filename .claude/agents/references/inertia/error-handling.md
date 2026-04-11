@@ -400,3 +400,29 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 | Success notification | `flash[:notice]` via `redirect_to` | "Entity created successfully." |
 | Destructive action warning | `flash[:alert]` via `redirect_to` | "Entity was deleted." |
 | Server error (500) | Inertia error page | Custom error page component |
+
+## Inertia v3 Event Callbacks
+
+When handling errors in visit callbacks, use the v3 event names:
+
+```tsx
+import { router } from '@inertiajs/react'
+
+router.visit('/users', {
+  onHttpException: (error) => {
+    // HTTP errors (4xx, 5xx) -- replaces v2 "invalid" event
+    console.error('HTTP error:', error.status)
+  },
+  onNetworkError: (error) => {
+    // Network failures (timeout, offline) -- replaces v2 "exception" event
+    console.error('Network error:', error)
+  },
+})
+```
+
+**v2 → v3 event name migration:**
+
+| v2 Name | v3 Name | When |
+|---------|---------|------|
+| `invalid` | `httpException` | Non-Inertia response (4xx/5xx) |
+| `exception` | `networkError` | Network failure, timeout |

@@ -128,14 +128,77 @@ router.reload({ only: ['users'] })
 router.get('/users', { search: query }, { preserveState: true, only: ['users'] })
 ```
 
-## Lazy and Deferred Props
+## Optional and Deferred Props
 
 ```ruby
-# Lazy props -- only loaded on partial reload
+# Optional props -- only loaded on partial reload (request must include `only` or `except`)
 render inertia: 'Dashboard', props: {
-  stats: InertiaRails.lazy { DashboardQuery.new(current_user).stats },
+  stats: InertiaRails.optional { DashboardQuery.new(current_user).stats },
   user: serialize_user(current_user)  # Always included
 }
+```
+
+## Always Props
+
+```ruby
+# Always included in every response, even partial reloads
+render inertia: 'Dashboard', props: {
+  user: serialize_user(current_user),
+  permissions: InertiaRails.always { policy_props(current_user) }
+}
+```
+
+## Merge Props (Infinite Scroll)
+
+```ruby
+# Merge new data into existing props instead of replacing
+render inertia: 'Posts/Index', props: {
+  posts: InertiaRails.merge { paginated_posts(params[:page]) }
+}
+```
+
+## WhenVisible (Viewport-Triggered Loading)
+
+```tsx
+import { WhenVisible } from '@inertiajs/react'
+
+// Loads the "comments" prop when the element scrolls into view
+<WhenVisible data="comments" fallback={<Spinner />}>
+  <CommentList comments={comments!} />
+</WhenVisible>
+```
+
+## Polling with usePoll
+
+```tsx
+import { usePoll } from '@inertiajs/react'
+
+// Refresh specific props at an interval
+usePoll(5000, { only: ['notifications'] })
+```
+
+## Prefetching
+
+```tsx
+import { Link } from '@inertiajs/react'
+
+// Prefetch on hover (default)
+<Link href="/users" prefetch>Users</Link>
+
+// Prefetch on mount
+<Link href="/dashboard" prefetch="mount">Dashboard</Link>
+```
+
+## useHttp (Non-Navigating Requests)
+
+```tsx
+import { useHttp } from '@inertiajs/react'
+
+// Standalone HTTP requests that don't trigger page navigation
+const { data, post, processing, errors } = useHttp<{ valid: boolean }>()
+
+// Use for background saves, inline validation, API calls
+post('/api/validate', { email: value })
 ```
 
 ## Persistent Layouts
@@ -190,6 +253,33 @@ window.location.href = '/users'
 // GOOD -- use Inertia router
 import { router } from '@inertiajs/react'
 router.visit('/users')
+```
+
+```ruby
+# BAD -- InertiaRails.lazy is removed in v3
+stats: InertiaRails.lazy { expensive_query }
+
+# GOOD -- use InertiaRails.optional
+stats: InertiaRails.optional { expensive_query }
+```
+
+```tsx
+// BAD -- router.cancel() is removed in v3
+router.cancel()
+
+// GOOD -- use router.cancelAll()
+router.cancelAll()
+```
+
+```tsx
+// BAD -- using Axios directly (removed in v3, built-in XHR client)
+import axios from 'axios'
+axios.get('/api/data')
+
+// GOOD -- use useHttp for standalone requests
+import { useHttp } from '@inertiajs/react'
+const { get } = useHttp()
+get('/api/data')
 ```
 
 ## Testing

@@ -468,11 +468,18 @@ export default function Registration() {
 }
 ```
 
-## Inline Validation Pattern
+## useHttp: Non-Navigating Requests
+
+Use `useHttp` for HTTP requests that should NOT trigger Inertia page navigation.
+Ideal for inline validation, background saves, and API calls.
 
 ```tsx
-import { useForm, router } from '@inertiajs/react'
-import { useCallback } from 'react'
+import { useHttp } from '@inertiajs/react'
+
+interface ValidateResponse {
+  valid: boolean
+  message?: string
+}
 
 export default function UserForm() {
   const form = useForm({
@@ -480,43 +487,26 @@ export default function UserForm() {
     username: '',
   })
 
-  // Validate a single field by submitting to a validation endpoint
-  const validateField = useCallback(
-    (field: string, value: string) => {
-      router.post(
-        '/users/validate',
-        { field, value },
-        {
-          preserveState: true,
-          preserveScroll: true,
-          // Only update errors, do not navigate
-          onSuccess: (page) => {
-            // Errors are automatically merged
-          },
-        }
-      )
-    },
-    []
-  )
+  const http = useHttp<ValidateResponse>()
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); form.post('/users') }}>
       <input
         value={form.data.email}
         onChange={(e) => form.setData('email', e.target.value)}
-        onBlur={(e) => validateField('email', e.target.value)}
+        onBlur={(e) => http.post('/users/validate', { field: 'email', value: e.target.value })}
       />
-      {form.errors.email && (
-        <p className="text-red-600 text-sm mt-1">{form.errors.email}</p>
+      {http.errors.email && (
+        <p className="text-red-600 text-sm mt-1">{http.errors.email}</p>
       )}
 
       <input
         value={form.data.username}
         onChange={(e) => form.setData('username', e.target.value)}
-        onBlur={(e) => validateField('username', e.target.value)}
+        onBlur={(e) => http.post('/users/validate', { field: 'username', value: e.target.value })}
       />
-      {form.errors.username && (
-        <p className="text-red-600 text-sm mt-1">{form.errors.username}</p>
+      {http.errors.username && (
+        <p className="text-red-600 text-sm mt-1">{http.errors.username}</p>
       )}
 
       <button type="submit" disabled={form.processing}>Submit</button>
@@ -525,7 +515,17 @@ export default function UserForm() {
 }
 ```
 
-Rails controller for inline validation:
+**useForm vs useHttp:**
+
+| Feature | `useForm` | `useHttp` |
+|---------|-----------|-----------|
+| Triggers page navigation | Yes | No |
+| Manages form data/errors | Yes | Yes |
+| Use case | Form submissions (CRUD) | Background requests, inline validation, API calls |
+
+## Inline Validation Pattern
+
+Rails controller for inline validation (works with both `useHttp` and `useForm`):
 
 ```ruby
 # app/controllers/users_controller.rb
@@ -535,10 +535,24 @@ def validate
 
   field = params[:field].to_sym
   if user.errors[field].any?
-    redirect_back fallback_location: new_user_path,
-                  inertia: { errors: { field => user.errors[field].first } }
+    render json: { errors: { field => user.errors[field].first } }, status: :unprocessable_entity
   else
-    redirect_back fallback_location: new_user_path
+    render json: { valid: true }
   end
 end
+```
+
+## Optimistic Updates
+
+First-class optimistic UI with automatic rollback on failure:
+
+```tsx
+import { useForm } from '@inertiajs/react'
+
+const form = useForm({ name: '' })
+
+// Optimistically update a prop before the server responds
+form.optimistic('users', (users) => [...users, { name: form.data.name, id: Date.now() }])
+form.post('/users')
+// If the request fails, the optimistic update is automatically rolled back
 ```

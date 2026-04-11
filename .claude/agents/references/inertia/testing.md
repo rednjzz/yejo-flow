@@ -9,6 +9,11 @@ require 'inertia_rails/rspec'
 RSpec.configure do |config|
   # inertia_rails/rspec provides the `inertia` helper automatically
   # for request specs when type: :request
+
+  # To evaluate optional props (InertiaRails.optional) in tests:
+  # config.before(:each, evaluate_optional_props: true) do
+  #   InertiaRails.configuration.evaluate_optional_props = true
+  # end
 end
 ```
 

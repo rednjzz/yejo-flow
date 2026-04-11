@@ -175,8 +175,9 @@ export function useClickOutside<T extends HTMLElement>(
 
 - **Server state**: Use Inertia props. Don't duplicate in React state.
 - **UI state**: Use `useState` for toggles, modals, dropdowns.
-- **Form state**: Use `useForm()` from `@inertiajs/react`.
+- **Form state**: Use `useForm()` for navigating submissions, `useHttp()` for non-navigating requests (inline validation, background saves).
 - **Shared client state**: Lift state up or use React Context. Avoid external state libraries unless truly needed.
+- **Polling**: Use `usePoll()` to keep server data fresh at intervals.
 
 ```tsx
 // BAD -- duplicating server state
