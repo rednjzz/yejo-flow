@@ -75,9 +75,6 @@ export interface ProjectDetail extends ProjectListItem {
   actual_end_date: string | null
   manager_id: number | null
   manager_name: string | null
-  advance_rate: number | null
-  advance_amount: number | null
-  retention_rate: number | null
   notes: string | null
 }
 
@@ -93,9 +90,6 @@ export interface ProjectFormData {
   end_date: string
   status: ProjectStatus
   manager_id: number | null
-  advance_rate: number | string
-  advance_amount: number | string
-  retention_rate: number | string
   notes: string
   allowed_transitions?: string[]
 }

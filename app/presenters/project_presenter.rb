@@ -62,7 +62,6 @@ class ProjectPresenter < SimpleDelegator
       actual_end_date: actual_end_date&.iso8601,
       manager_id: manager_id,
       manager_name: manager_name,
-      retention_rate: retention_rate,
       notes: notes
     )
   end
@@ -80,7 +79,6 @@ class ProjectPresenter < SimpleDelegator
       end_date: end_date.iso8601,
       status: status,
       manager_id: manager_id,
-      retention_rate: retention_rate,
       notes: notes,
       allowed_transitions: Project::STATUS_FLOW[status] || []
     }

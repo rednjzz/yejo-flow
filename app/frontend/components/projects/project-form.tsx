@@ -226,29 +226,6 @@ export function ProjectForm({
               </div>
             )}
 
-            {/* 선급금비율 */}
-            <div className="space-y-2">
-              <Label htmlFor="advance_rate">선급금 비율 (%)</Label>
-              <Input
-                id="advance_rate"
-                name="project[advance_rate]"
-                type="number"
-                step="0.01"
-                defaultValue={defaultValues?.advance_rate?.toString() ?? ""}
-              />
-            </div>
-
-            {/* 하자보증금비율 */}
-            <div className="space-y-2">
-              <Label htmlFor="retention_rate">하자보증금 비율 (%)</Label>
-              <Input
-                id="retention_rate"
-                name="project[retention_rate]"
-                type="number"
-                step="0.01"
-                defaultValue={defaultValues?.retention_rate?.toString() ?? ""}
-              />
-            </div>
           </div>
 
           {/* 비고 */}

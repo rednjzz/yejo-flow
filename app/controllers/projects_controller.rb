@@ -66,7 +66,7 @@ class ProjectsController < InertiaController
     params.expect(project: [
       :project_name, :client_id, :site_address, :contract_amount,
       :start_date, :end_date, :status, :manager_id,
-      :advance_rate, :advance_amount, :retention_rate, :notes
+      :notes
     ])
   end
 end
