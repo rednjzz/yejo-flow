@@ -16,7 +16,6 @@ FactoryBot.define do
     trait :change do
       contract_type { "change" }
       change_seq { 1 }
-      change_amount { 100_000_000 }
     end
   end
 end

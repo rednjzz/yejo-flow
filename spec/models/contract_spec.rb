@@ -16,15 +16,12 @@ RSpec.describe Contract do
     it { is_expected.to validate_numericality_of(:vat_amount).is_greater_than_or_equal_to(0) }
 
     context "when contract_type is change" do
-      subject { build(:contract, :change) }
-
-      it { is_expected.to validate_presence_of(:change_amount) }
-    end
-
-    context "when contract_type is original" do
-      it "does not require change_amount" do
-        contract = build(:contract, :original, change_amount: nil)
-        expect(contract).to be_valid
+      it "auto-calculates change_amount from original contract" do
+        project = create(:project)
+        create(:contract, :original, project: project, supply_amount: 90_909_091, vat_amount: 9_090_909)
+        change = build(:contract, :change, project: project, supply_amount: 109_090_909, vat_amount: 10_909_091)
+        change.valid?
+        expect(change.change_amount).to eq(20_000_000)
       end
     end
 

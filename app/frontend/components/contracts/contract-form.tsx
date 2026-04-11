@@ -65,10 +65,6 @@ export function ContractForm({
   const [vatValue, setVatValue] = useState(
     defaultValues?.vat_amount?.toString() ?? "",
   )
-  const [changeAmount, setChangeAmount] = useState(
-    defaultValues?.change_amount?.toString() ?? "",
-  )
-
   const parsedSupply = parseInt(supplyAmount, 10) || 0
   const autoVat = Math.floor(parsedSupply * 0.1)
   const currentVat =
@@ -285,18 +281,6 @@ export function ContractForm({
             <span className="font-semibold tabular-nums">
               {formatCurrency(totalAmount)}원
             </span>
-          </div>
-
-          {/* 변경금액 */}
-          <div className="space-y-2">
-            <Label htmlFor="change_amount">변경금액 (증감액)</Label>
-            <CurrencyInput
-              id="change_amount"
-              name="contract[change_amount]"
-              value={changeAmount}
-              onValueChange={setChangeAmount}
-              placeholder="변경계약 시 입력"
-            />
           </div>
 
           {/* 결제조건 */}

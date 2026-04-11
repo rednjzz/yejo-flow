@@ -19,9 +19,9 @@ class Contract < ApplicationRecord
   validates :supply_amount, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :vat_amount, presence: true, numericality: {greater_than_or_equal_to: 0}
   validate :contract_amount_must_be_positive
-  validates :change_amount, presence: true, if: -> { contract_type == "change" }
 
   before_validation :calculate_contract_amount
+  before_validation :calculate_change_amount, if: -> { contract_type == "change" }
 
   validate :validate_contract_file_content_type_and_size
 
@@ -81,6 +81,13 @@ class Contract < ApplicationRecord
     return unless supply_amount.present? && vat_amount.present?
 
     self.contract_amount = supply_amount + vat_amount
+  end
+
+  def calculate_change_amount
+    original = project&.contracts&.find_by(contract_type: "original")
+    return unless original && contract_amount.present?
+
+    self.change_amount = contract_amount - original.contract_amount
   end
 
   def validate_contract_file_content_type_and_size

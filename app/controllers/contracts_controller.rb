@@ -40,7 +40,7 @@ class ContractsController < InertiaController
     params.expect(contract: [
       :contract_no, :contract_type, :change_seq,
       :contract_date, :supply_amount, :vat_amount,
-      :change_amount, :description,
+      :description,
       :defect_liability_months, :defect_warranty_rate,
       :late_penalty_rate, :late_penalty_cap_rate,
       :period_note, :special_conditions,
