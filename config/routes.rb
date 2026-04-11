@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   resources :projects, except: [:new, :edit] do
     resources :contracts, only: [:index, :create], module: :projects
   end
-  resources :contracts, only: [:show, :edit, :update, :destroy] do
+  resources :contracts, only: [:show, :update, :destroy] do
     resources :contract_items, only: [:create], module: :contracts
   end
   resources :contract_items, only: [:update, :destroy]

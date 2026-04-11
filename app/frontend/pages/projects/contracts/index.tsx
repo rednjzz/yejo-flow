@@ -1,4 +1,4 @@
-import { Head, Link } from "@inertiajs/react"
+import { Head } from "@inertiajs/react"
 import {
   ChevronDown,
   Download,
@@ -24,11 +24,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import AppLayout from "@/layouts/app-layout"
 import ProjectLayout from "@/layouts/project/project-layout"
 import { formatCurrency, formatDate } from "@/lib/format"
 import {
-  editContractPath,
+  contractPath,
   projectContractsPath,
   projectPath,
   projectsPath,
@@ -160,6 +167,8 @@ export default function ContractsIndex({
 // --- 계약 카드 ---
 
 function ContractCard({ contract }: { contract: ContractProps }) {
+  const [editOpen, setEditOpen] = useState(false)
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -175,11 +184,13 @@ function ContractCard({ contract }: { contract: ContractProps }) {
                 {formatCurrency(contract.contract_amount)}원
               </span>
             </div>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={editContractPath(contract.id)}>
-                <Pencil className="size-4" />
-                수정
-              </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setEditOpen(true)}
+            >
+              <Pencil className="size-4" />
+              수정
             </Button>
           </div>
         </div>
@@ -219,6 +230,42 @@ function ContractCard({ contract }: { contract: ContractProps }) {
           <ContractItemsTable contract={contract} />
         </CollapsibleSection>
       </CardContent>
+
+      {/* 수정 Sheet */}
+      <Sheet open={editOpen} onOpenChange={setEditOpen}>
+        <SheetContent side="right" className="overflow-y-auto sm:max-w-lg">
+          <SheetHeader>
+            <SheetTitle>계약 수정</SheetTitle>
+            <SheetDescription>
+              {contract.type_label} — {contract.contract_code}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="px-4 pb-4">
+            <ContractForm
+              action={contractPath(contract.id)}
+              method="patch"
+              defaultValues={{
+                id: contract.id,
+                contract_code: contract.contract_code,
+                contract_type: contract.contract_type,
+                change_seq: contract.change_seq,
+                contract_date: contract.contract_date,
+                supply_amount: contract.supply_amount,
+                vat_amount: contract.vat_amount,
+                description: contract.description ?? "",
+                defect_liability_months: contract.defect_liability_months ?? "",
+                defect_warranty_rate: contract.defect_warranty_rate ?? "",
+                late_penalty_rate: contract.late_penalty_rate ?? "",
+                late_penalty_cap_rate: contract.late_penalty_cap_rate ?? "",
+                period_note: contract.period_note ?? "",
+                special_conditions: contract.special_conditions ?? "",
+                contract_files: contract.contract_files,
+                contract_payment_terms: contract.contract_payment_terms,
+              }}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </Card>
   )
 }

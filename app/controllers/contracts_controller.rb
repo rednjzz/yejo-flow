@@ -7,18 +7,11 @@ class ContractsController < InertiaController
     render inertia: {contract: ContractPresenter.new(@contract).as_props}
   end
 
-  def edit
-    render inertia: {
-      contract: ContractPresenter.new(@contract).as_form_props,
-      project: ProjectPresenter.new(@contract.project).as_detail_props
-    }
-  end
-
   def update
     if @contract.update(contract_params)
       redirect_to project_contracts_path(@contract.project), notice: "계약이 수정되었습니다"
     else
-      redirect_to edit_contract_path(@contract), inertia: {errors: @contract.errors}
+      redirect_to project_contracts_path(@contract.project), inertia: {errors: @contract.errors}
     end
   end
 
