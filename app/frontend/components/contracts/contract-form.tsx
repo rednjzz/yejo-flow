@@ -135,10 +135,31 @@ export function ContractForm({
   const updatePaymentTerm = useCallback(
     (index: number, field: keyof PaymentTermRow, value: string | number) => {
       setPaymentTerms((prev) =>
-        prev.map((t, i) => (i === index ? { ...t, [field]: value } : t)),
+        prev.map((t, i) => {
+          if (i !== index) return t
+          const updated = { ...t, [field]: value }
+
+          // 비율 → 금액 자동 계산
+          if (field === "rate" && totalAmount > 0) {
+            const rate = parseFloat(value as string)
+            if (!isNaN(rate)) {
+              updated.amount = Math.round(totalAmount * rate / 100).toString()
+            }
+          }
+
+          // 금액 → 비율 자동 계산
+          if (field === "amount" && totalAmount > 0) {
+            const amount = parseInt(value as string, 10)
+            if (!isNaN(amount)) {
+              updated.rate = (amount / totalAmount * 100).toFixed(2)
+            }
+          }
+
+          return updated
+        }),
       )
     },
-    [],
+    [totalAmount],
   )
 
   const hasAdvance = paymentTerms.some(
