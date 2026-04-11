@@ -1,6 +1,10 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+AllCops:
+  Exclude:
+    - "db/migrate/20260411022912_create_active_storage_tables.active_storage.rb"
+
 Layout/SpaceInsideArrayLiteralBrackets:
   EnforcedStyle: no_space
 
