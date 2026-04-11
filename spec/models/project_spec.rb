@@ -14,8 +14,6 @@ RSpec.describe Project do
     end
     it { is_expected.to validate_presence_of(:project_name) }
     it { is_expected.to validate_length_of(:project_name).is_at_most(200) }
-    it { is_expected.to validate_presence_of(:contract_amount) }
-    it { is_expected.to validate_numericality_of(:contract_amount).is_greater_than(0) }
     it { is_expected.to validate_presence_of(:start_date) }
     it { is_expected.to validate_presence_of(:end_date) }
     it { is_expected.to validate_presence_of(:status) }
@@ -58,14 +56,6 @@ RSpec.describe Project do
         project = build(:project, project_code: "CUSTOM-001")
         project.valid?
         expect(project.project_code).to eq("CUSTOM-001")
-      end
-    end
-
-    describe "#calculate_vat" do
-      it "calculates VAT as 10% of contract amount" do
-        project = build(:project, contract_amount: 1_000_000_000)
-        project.valid?
-        expect(project.vat_amount).to eq(100_000_000)
       end
     end
   end

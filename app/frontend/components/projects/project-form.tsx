@@ -1,9 +1,7 @@
 import { Form } from "@inertiajs/react"
-import { useCallback, useState } from "react"
 
 import InputError from "@/components/input-error"
 import { Button } from "@/components/ui/button"
-import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -13,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { formatCurrency } from "@/lib/format"
 import type { Company, ProjectFormData, StatusOption } from "@/types"
 
 interface ProjectFormProps {
@@ -37,26 +34,6 @@ export function ProjectForm({
   defaultValues,
   allowedTransitions,
 }: ProjectFormProps) {
-  const [contractAmount, setContractAmount] = useState<string>(
-    defaultValues?.contract_amount?.toString() ?? "",
-  )
-  const [vatAmount, setVatAmount] = useState<number>(
-    defaultValues?.vat_amount ?? 0,
-  )
-
-  const handleAmountChange = useCallback(
-    (raw: string) => {
-      const num = parseInt(raw, 10)
-      setContractAmount(raw)
-      if (!isNaN(num)) {
-        setVatAmount(Math.floor(num * 0.1))
-      } else {
-        setVatAmount(0)
-      }
-    },
-    [],
-  )
-
   const isEdit = method === "patch"
   const currentStatus = defaultValues?.status ?? "preparing"
 
@@ -121,34 +98,6 @@ export function ProjectForm({
                 id="site_address"
                 name="project[site_address]"
                 defaultValue={defaultValues?.site_address ?? ""}
-              />
-            </div>
-
-            {/* 도급금액 */}
-            <div className="space-y-2">
-              <Label htmlFor="contract_amount">
-                도급금액 (부가세 별도){" "}
-                <span className="text-destructive">*</span>
-              </Label>
-              <CurrencyInput
-                id="contract_amount"
-                name="project[contract_amount]"
-                value={contractAmount}
-                onValueChange={handleAmountChange}
-                required
-                placeholder="0"
-              />
-              <InputError messages={errors?.contract_amount} />
-            </div>
-
-            {/* 부가세 */}
-            <div className="space-y-2">
-              <Label htmlFor="vat_amount">부가세</Label>
-              <Input
-                id="vat_amount"
-                value={formatCurrency(vatAmount)}
-                readOnly
-                className="bg-muted"
               />
             </div>
 
@@ -225,7 +174,6 @@ export function ProjectForm({
                 <InputError messages={errors?.status} />
               </div>
             )}
-
           </div>
 
           {/* 비고 */}

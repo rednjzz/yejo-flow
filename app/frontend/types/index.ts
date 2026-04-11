@@ -71,7 +71,6 @@ export interface ProjectListItem {
 
 export interface ProjectDetail extends ProjectListItem {
   site_address: string | null
-  vat_amount: number
   actual_end_date: string | null
   manager_id: number | null
   manager_name: string | null
@@ -84,8 +83,6 @@ export interface ProjectFormData {
   project_name: string
   client_id: number | null
   site_address: string
-  contract_amount: number | string
-  vat_amount: number
   start_date: string
   end_date: string
   status: ProjectStatus

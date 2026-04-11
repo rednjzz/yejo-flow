@@ -4,34 +4,31 @@ class ProjectsController < InertiaController
   before_action :set_project, only: [:show, :edit, :update]
 
   def index
-    projects = Project.includes(:client)
+    projects = Project.includes(:client, :contracts)
     projects = projects.where(status: params[:status]) if params[:status].present?
     projects = projects.where("project_name LIKE ?", "%#{params[:q]}%") if params[:q].present?
     projects = projects.order(created_at: :desc)
 
-    render inertia: {projects: projects.map { |p| ProjectPresenter.new(p).as_list_props }}
+    render inertia: {
+      projects: projects.map { |p| ProjectPresenter.new(p).as_list_props },
+      new_project_code: Project.generate_project_code,
+      clients: Company.clients.active.select(:id, :company_name).map { |c| {id: c.id, company_name: c.company_name} },
+      managers: User.managers.select(:id, :name).map { |u| {id: u.id, name: u.name} }
+    }
   end
 
   def show
     render inertia: {project: ProjectPresenter.new(@project).as_detail_props}
   end
 
-  def new
-    render inertia: {
-      project_code: Project.generate_project_code,
-      clients: Company.clients.active.select(:id, :company_name).map { |c| {id: c.id, company_name: c.company_name} },
-      managers: User.managers.select(:id, :name).map { |u| {id: u.id, name: u.name} },
-      statuses: Project::STATUSES.map { |s| {value: s, label: Project::STATUS_LABELS[s]} }
-    }
-  end
-
+  # create는 index 페이지의 Sheet에서 폼 제출
   def create
     result = Projects::CreateService.call(project_params)
 
     if result.success?
       redirect_to project_path(result.record), notice: "현장이 등록되었습니다"
     else
-      redirect_to new_project_path, inertia: {errors: result.errors}
+      redirect_to projects_path, inertia: {errors: result.errors}
     end
   end
 
@@ -64,7 +61,7 @@ class ProjectsController < InertiaController
 
   def project_params
     params.expect(project: [
-      :project_name, :client_id, :site_address, :contract_amount,
+      :project_name, :client_id, :site_address,
       :start_date, :end_date, :status, :manager_id,
       :notes
     ])

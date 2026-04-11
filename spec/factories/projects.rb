@@ -5,7 +5,6 @@ FactoryBot.define do
     sequence(:project_code) { |n| "#{Date.current.year}-#{n.to_s.rjust(3, "0")}" }
     project_name { "테스트 현장" }
     association :client, factory: [:company, :client]
-    contract_amount { 1_000_000_000 }
     start_date { Date.current }
     end_date { 1.year.from_now.to_date }
     status { "preparing" }

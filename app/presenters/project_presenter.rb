@@ -18,9 +18,10 @@ class ProjectPresenter < SimpleDelegator
   end
 
   def amount_in_billion
-    return "0억" if contract_amount.zero?
+    amount = current_contract_amount || 0
+    return "0억" if amount.zero?
 
-    billion = contract_amount / 100_000_000.0
+    billion = amount / 100_000_000.0
     if billion == billion.to_i
       "#{billion.to_i}억"
     else
@@ -42,7 +43,7 @@ class ProjectPresenter < SimpleDelegator
       project_code: project_code,
       project_name: project_name,
       client_name: client_name,
-      contract_amount: contract_amount,
+      contract_amount: current_contract_amount || 0,
       amount_in_billion: amount_in_billion,
       start_date: start_date.iso8601,
       end_date: end_date.iso8601,
@@ -58,7 +59,6 @@ class ProjectPresenter < SimpleDelegator
   def as_detail_props
     as_list_props.merge(
       site_address: site_address,
-      vat_amount: vat_amount,
       actual_end_date: actual_end_date&.iso8601,
       manager_id: manager_id,
       manager_name: manager_name,
@@ -73,8 +73,6 @@ class ProjectPresenter < SimpleDelegator
       project_name: project_name,
       client_id: client_id,
       site_address: site_address,
-      contract_amount: contract_amount,
-      vat_amount: vat_amount,
       start_date: start_date.iso8601,
       end_date: end_date.iso8601,
       status: status,

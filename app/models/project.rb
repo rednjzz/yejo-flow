@@ -26,14 +26,12 @@ class Project < ApplicationRecord
 
   validates :project_code, presence: true, uniqueness: true
   validates :project_name, presence: true, length: {maximum: 200}
-  validates :contract_amount, presence: true, numericality: {greater_than: 0}
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :status, presence: true, inclusion: {in: STATUSES}
   validate :end_date_after_start_date
 
   before_validation :set_project_code, on: :create
-  before_validation :calculate_vat
 
   scope :active, -> { where.not(status: "closed") }
 
@@ -80,10 +78,6 @@ class Project < ApplicationRecord
 
   def set_project_code
     self.project_code ||= self.class.generate_project_code
-  end
-
-  def calculate_vat
-    self.vat_amount = (contract_amount * 0.1).to_i if contract_amount.present?
   end
 
   def end_date_after_start_date

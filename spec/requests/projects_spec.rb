@@ -27,15 +27,6 @@ RSpec.describe "Projects" do
     end
   end
 
-  describe "GET /projects/new" do
-    before { create(:company, :client) }
-
-    it "returns success" do
-      get new_project_path
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "POST /projects" do
     let(:client) { create(:company, :client) }
 
@@ -45,7 +36,6 @@ RSpec.describe "Projects" do
           post projects_path, params: {project: {
             project_name: "새 현장",
             client_id: client.id,
-            contract_amount: 1_000_000_000,
             start_date: Date.current,
             end_date: 1.year.from_now.to_date
           }}

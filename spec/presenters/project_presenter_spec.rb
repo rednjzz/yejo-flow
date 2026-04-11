@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe ProjectPresenter do
-  let(:project) { create(:project, contract_amount: 8_200_000_000) }
+  let(:project) { create(:project) }
   let(:presenter) { described_class.new(project) }
 
   describe "#client_name" do
@@ -13,19 +13,18 @@ RSpec.describe ProjectPresenter do
   end
 
   describe "#amount_in_billion" do
-    it "formats whole billions" do
-      project = build(:project, contract_amount: 8_200_000_000)
-      expect(described_class.new(project).amount_in_billion).to eq("82억")
+    it "returns 0억 when no contracts exist" do
+      expect(presenter.amount_in_billion).to eq("0억")
     end
 
-    it "formats fractional billions" do
-      project = build(:project, contract_amount: 5_120_000_000)
-      expect(described_class.new(project).amount_in_billion).to eq("51.2억")
+    it "formats whole billions from contract" do
+      create(:contract, project: project, supply_amount: 7_454_545_454, vat_amount: 745_454_546)
+      expect(described_class.new(project.reload).amount_in_billion).to eq("82억")
     end
 
-    it "handles small amounts" do
-      project = build(:project, contract_amount: 1)
-      expect(described_class.new(project).amount_in_billion).to eq("0.0억")
+    it "formats fractional billions from contract" do
+      create(:contract, project: project, supply_amount: 4_654_545_454, vat_amount: 465_454_546)
+      expect(described_class.new(project.reload).amount_in_billion).to eq("51.2억")
     end
   end
 

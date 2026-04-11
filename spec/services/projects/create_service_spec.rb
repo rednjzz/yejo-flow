@@ -8,7 +8,6 @@ RSpec.describe Projects::CreateService do
     {
       project_name: "테스트 현장",
       client_id: client.id,
-      contract_amount: 1_000_000_000,
       start_date: Date.current,
       end_date: 1.year.from_now.to_date
     }
@@ -21,7 +20,6 @@ RSpec.describe Projects::CreateService do
         expect(result).to be_success
         expect(result.record).to be_persisted
         expect(result.record.project_code).to match(/\A\d{4}-\d{3}\z/)
-        expect(result.record.vat_amount).to eq(100_000_000)
       end
     end
 
