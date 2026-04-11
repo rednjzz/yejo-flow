@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 
 import InputError from "@/components/input-error"
 import { Button } from "@/components/ui/button"
+import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -44,8 +45,7 @@ export function ProjectForm({
   )
 
   const handleAmountChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value.replace(/,/g, "")
+    (raw: string) => {
       const num = parseInt(raw, 10)
       setContractAmount(raw)
       if (!isNaN(num)) {
@@ -130,14 +130,13 @@ export function ProjectForm({
                 도급금액 (부가세 별도){" "}
                 <span className="text-destructive">*</span>
               </Label>
-              <Input
+              <CurrencyInput
                 id="contract_amount"
                 name="project[contract_amount]"
-                type="number"
                 value={contractAmount}
-                onChange={handleAmountChange}
+                onValueChange={handleAmountChange}
                 required
-                min={1}
+                placeholder="0"
               />
               <InputError messages={errors?.contract_amount} />
             </div>

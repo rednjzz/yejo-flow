@@ -3,6 +3,7 @@ import { Plus, Trash2 } from "lucide-react"
 import { useCallback, useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -64,6 +65,9 @@ export function ContractForm({
   const [vatValue, setVatValue] = useState(
     defaultValues?.vat_amount?.toString() ?? "",
   )
+  const [changeAmount, setChangeAmount] = useState(
+    defaultValues?.change_amount?.toString() ?? "",
+  )
 
   const parsedSupply = parseInt(supplyAmount, 10) || 0
   const autoVat = Math.floor(parsedSupply * 0.1)
@@ -72,8 +76,8 @@ export function ContractForm({
   const totalAmount = parsedSupply + currentVat
 
   const handleSupplyChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSupplyAmount(e.target.value)
+    (raw: string) => {
+      setSupplyAmount(raw)
       if (!vatManual) {
         setVatValue("")
       }
@@ -81,13 +85,10 @@ export function ContractForm({
     [vatManual],
   )
 
-  const handleVatChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setVatManual(true)
-      setVatValue(e.target.value)
-    },
-    [],
-  )
+  const handleVatChange = useCallback((raw: string) => {
+    setVatManual(true)
+    setVatValue(raw)
+  }, [])
 
   // 결제조건 관리
   const [paymentTerms, setPaymentTerms] = useState<PaymentTermRow[]>(
@@ -139,19 +140,17 @@ export function ContractForm({
           if (i !== index) return t
           const updated = { ...t, [field]: value }
 
-          // 비율 → 금액 자동 계산
           if (field === "rate" && totalAmount > 0) {
             const rate = parseFloat(value as string)
             if (!isNaN(rate)) {
-              updated.amount = Math.round(totalAmount * rate / 100).toString()
+              updated.amount = Math.round((totalAmount * rate) / 100).toString()
             }
           }
 
-          // 금액 → 비율 자동 계산
           if (field === "amount" && totalAmount > 0) {
             const amount = parseInt(value as string, 10)
             if (!isNaN(amount)) {
-              updated.rate = (amount / totalAmount * 100).toFixed(2)
+              updated.rate = ((amount / totalAmount) * 100).toFixed(2)
             }
           }
 
@@ -235,29 +234,22 @@ export function ContractForm({
               <Label htmlFor="supply_amount">
                 공급가액 <span className="text-destructive">*</span>
               </Label>
-              <Input
+              <CurrencyInput
                 id="supply_amount"
                 name="contract[supply_amount]"
-                type="number"
-                required
-                min={0}
                 value={supplyAmount}
-                onChange={handleSupplyChange}
+                onValueChange={handleSupplyChange}
+                required
+                placeholder="0"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="vat_amount">부가가치세</Label>
-              <Input
+              <CurrencyInput
                 id="vat_amount"
                 name="contract[vat_amount]"
-                type="number"
-                min={0}
-                value={
-                  vatManual && vatValue !== ""
-                    ? vatValue
-                    : autoVat.toString()
-                }
-                onChange={handleVatChange}
+                value={vatManual && vatValue !== "" ? vatValue : autoVat.toString()}
+                onValueChange={handleVatChange}
                 placeholder="자동 계산 (10%)"
               />
             </div>
@@ -273,11 +265,11 @@ export function ContractForm({
           {/* 변경금액 */}
           <div className="space-y-2">
             <Label htmlFor="change_amount">변경금액 (증감액)</Label>
-            <Input
+            <CurrencyInput
               id="change_amount"
               name="contract[change_amount]"
-              type="number"
-              defaultValue={defaultValues?.change_amount?.toString() ?? ""}
+              value={changeAmount}
+              onValueChange={setChangeAmount}
               placeholder="변경계약 시 입력"
             />
           </div>
@@ -343,7 +335,11 @@ export function ContractForm({
                 >
                   {/* Hidden fields */}
                   {term.id && (
-                    <input type="hidden" name={`${prefix}[id]`} value={term.id} />
+                    <input
+                      type="hidden"
+                      name={`${prefix}[id]`}
+                      value={term.id}
+                    />
                   )}
                   <input
                     type="hidden"
@@ -405,14 +401,13 @@ export function ContractForm({
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">금액</Label>
-                      <Input
+                      <CurrencyInput
                         name={`${prefix}[amount]`}
-                        type="number"
-                        min={0}
                         value={term.amount}
-                        onChange={(e) =>
-                          updatePaymentTerm(index, "amount", e.target.value)
+                        onValueChange={(raw) =>
+                          updatePaymentTerm(index, "amount", raw)
                         }
+                        placeholder="0"
                       />
                     </div>
                     <div className="space-y-1">
