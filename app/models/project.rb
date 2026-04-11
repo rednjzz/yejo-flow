@@ -37,6 +37,30 @@ class Project < ApplicationRecord
 
   scope :active, -> { where.not(status: "closed") }
 
+  def latest_contract
+    contracts.order(change_seq: :desc).first
+  end
+
+  def current_contract_amount
+    latest_contract&.contract_amount
+  end
+
+  def effective_defect_liability_months
+    effective_contract_value(:defect_liability_months)
+  end
+
+  def effective_late_penalty_rate
+    effective_contract_value(:late_penalty_rate)
+  end
+
+  def effective_late_penalty_cap_rate
+    effective_contract_value(:late_penalty_cap_rate)
+  end
+
+  def effective_contract_payment_terms
+    latest_contract&.contract_payment_terms&.ordered || ContractPaymentTerm.none
+  end
+
   def status_label
     STATUS_LABELS[status]
   end
@@ -65,5 +89,13 @@ class Project < ApplicationRecord
   def end_date_after_start_date
     return unless start_date && end_date
     errors.add(:end_date, "은 착공일 이후여야 합니다") if end_date <= start_date
+  end
+
+  def effective_contract_value(field)
+    contracts.order(change_seq: :desc).each do |contract|
+      value = contract.public_send(field)
+      return value if value.present?
+    end
+    nil
   end
 end

@@ -6,7 +6,8 @@ FactoryBot.define do
     sequence(:contract_no) { |n| "CON-#{n.to_s.rjust(3, "0")}" }
     contract_type { "original" }
     contract_date { Date.current }
-    contract_amount { 1_000_000_000 }
+    supply_amount { 909_090_909 }
+    vat_amount { 90_909_091 }
 
     trait :original do
       contract_type { "original" }

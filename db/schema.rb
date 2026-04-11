@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_151902) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_11_030000) do
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "companies", force: :cascade do |t|
     t.string "company_code", null: false
     t.string "company_name", null: false
@@ -23,7 +51,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_151902) do
   end
 
   create_table "contract_details", force: :cascade do |t|
-    t.integer "amount", default: 0, null: false
+    t.bigint "amount", default: 0, null: false
     t.integer "contract_id", null: false
     t.datetime "created_at", null: false
     t.string "item_name", null: false
@@ -31,7 +59,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_151902) do
     t.decimal "quantity", precision: 12, scale: 3
     t.integer "sort_order", default: 0, null: false
     t.string "unit"
-    t.integer "unit_price"
+    t.bigint "unit_price"
     t.datetime "updated_at", null: false
     t.integer "work_type_id", null: false
     t.index ["contract_id", "sort_order"], name: "index_contract_details_on_contract_id_and_sort_order"
@@ -40,27 +68,51 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_151902) do
     t.index ["work_type_id"], name: "index_contract_details_on_work_type_id"
   end
 
+  create_table "contract_payment_terms", force: :cascade do |t|
+    t.bigint "amount"
+    t.string "condition"
+    t.integer "contract_id", null: false
+    t.datetime "created_at", null: false
+    t.date "due_date"
+    t.string "interim_method"
+    t.bigint "paid_amount"
+    t.date "paid_date"
+    t.decimal "rate", precision: 5, scale: 2
+    t.integer "seq", default: 1, null: false
+    t.integer "sort_order", default: 0, null: false
+    t.string "term_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_id", "term_type", "seq"], name: "idx_payment_terms_unique", unique: true
+    t.index ["contract_id"], name: "index_contract_payment_terms_on_contract_id"
+  end
+
   create_table "contracts", force: :cascade do |t|
-    t.integer "change_amount"
+    t.bigint "change_amount"
     t.integer "change_seq"
-    t.integer "contract_amount", null: false
+    t.bigint "contract_amount", null: false
     t.date "contract_date", null: false
     t.string "contract_no", null: false
     t.string "contract_type", null: false
     t.datetime "created_at", null: false
+    t.integer "defect_liability_months"
+    t.decimal "defect_warranty_rate", precision: 5, scale: 2
     t.text "description"
+    t.decimal "late_penalty_cap_rate", precision: 5, scale: 2
+    t.decimal "late_penalty_rate", precision: 5, scale: 3
+    t.text "period_note"
     t.integer "project_id", null: false
+    t.text "special_conditions"
+    t.bigint "supply_amount", null: false
     t.datetime "updated_at", null: false
+    t.bigint "vat_amount", null: false
     t.index ["project_id", "contract_type"], name: "index_contracts_on_project_id_and_contract_type"
     t.index ["project_id"], name: "index_contracts_on_project_id"
   end
 
   create_table "projects", force: :cascade do |t|
     t.date "actual_end_date"
-    t.integer "advance_amount"
-    t.decimal "advance_rate", precision: 5, scale: 2
     t.integer "client_id", null: false
-    t.integer "contract_amount", null: false
+    t.bigint "contract_amount", null: false
     t.datetime "created_at", null: false
     t.date "end_date", null: false
     t.integer "manager_id"
@@ -72,7 +124,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_151902) do
     t.date "start_date", null: false
     t.string "status", default: "preparing", null: false
     t.datetime "updated_at", null: false
-    t.integer "vat_amount"
+    t.bigint "vat_amount"
     t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["manager_id"], name: "index_projects_on_manager_id"
     t.index ["project_code"], name: "index_projects_on_project_code", unique: true
@@ -113,9 +165,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_151902) do
     t.index ["work_type_code"], name: "index_work_types_on_work_type_code", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contract_details", "contracts"
   add_foreign_key "contract_details", "projects"
   add_foreign_key "contract_details", "work_types"
+  add_foreign_key "contract_payment_terms", "contracts"
   add_foreign_key "contracts", "projects"
   add_foreign_key "projects", "companies", column: "client_id"
   add_foreign_key "projects", "users", column: "manager_id"

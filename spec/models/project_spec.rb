@@ -117,4 +117,63 @@ RSpec.describe Project do
       end
     end
   end
+
+  describe "#latest_contract" do
+    let(:project) { create(:project) }
+
+    it "returns the contract with highest change_seq" do
+      create(:contract, :original, project: project, change_seq: nil)
+      change1 = create(:contract, :change, project: project, change_seq: 1)
+      create(:contract, :change, project: project, change_seq: 2)
+
+      # change_seq DESC → 2, 1, nil. First = change_seq 2
+      expect(project.latest_contract.change_seq).to eq(2)
+    end
+
+    it "returns original when no changes exist" do
+      original = create(:contract, :original, project: project)
+      expect(project.latest_contract).to eq(original)
+    end
+  end
+
+  describe "#current_contract_amount" do
+    let(:project) { create(:project) }
+
+    it "returns the latest contract amount" do
+      create(:contract, :original, project: project, supply_amount: 90_909_091, vat_amount: 9_090_909)
+      create(:contract, :change, project: project, change_seq: 1,
+              supply_amount: 109_090_909, vat_amount: 10_909_091)
+      expect(project.current_contract_amount).to eq(120_000_000)
+    end
+  end
+
+  describe "#effective_defect_liability_months" do
+    let(:project) { create(:project) }
+
+    it "returns value from latest contract that has it" do
+      create(:contract, :original, project: project, defect_liability_months: 24)
+      create(:contract, :change, project: project, change_seq: 1, defect_liability_months: nil)
+      expect(project.effective_defect_liability_months).to eq(24)
+    end
+
+    it "returns latest value if set on change contract" do
+      create(:contract, :original, project: project, defect_liability_months: 24)
+      create(:contract, :change, project: project, change_seq: 1, defect_liability_months: 36)
+      expect(project.effective_defect_liability_months).to eq(36)
+    end
+  end
+
+  describe "#effective_contract_payment_terms" do
+    let(:project) { create(:project) }
+
+    it "returns payment terms from latest contract" do
+      original = create(:contract, :original, project: project)
+      create(:contract_payment_term, :advance, contract: original)
+
+      change1 = create(:contract, :change, project: project, change_seq: 1)
+      term = create(:contract_payment_term, :advance, contract: change1, rate: 40.0)
+
+      expect(project.effective_contract_payment_terms).to contain_exactly(term)
+    end
+  end
 end
