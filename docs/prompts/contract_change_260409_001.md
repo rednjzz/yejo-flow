@@ -18,7 +18,7 @@
 | 계약금액 | ₩127,600,000 |
 | 공급가액 | ₩116,000,000 |
 | 부가가치세 | ₩11,600,000 |
-| 결재방법 | 착수금 40% (₩51,040,000, 계약후 15일이내) / 중도금 40% (₩51,040,000, 2층 바닥 con.c타설 후) / 잔금 20% (₩25,520,000, 준공후 15일이내) — *중도금은 공사 규모에 따라 1차·2차·3차 등 여러 건으로 분할될 수 있음* |
+| 결제방법 | 착수금 40% (₩51,040,000, 계약후 15일이내) / 중도금 40% (₩51,040,000, 2층 바닥 con.c타설 후) / 잔금 20% (₩25,520,000, 준공후 15일이내) — *중도금은 공사 규모에 따라 1차·2차·3차 등 여러 건으로 분할될 수 있음* |
 | 하자책임기간 | 24개월 |
 | 하자보증보율 | 보증보험증권 (계약금액의 3%) |
 | 지체상환율 | 0.1%/일, 총 상한 계약금액의 3% |
@@ -35,13 +35,13 @@
 
 ### 누락된 항목
 1. **공급가액 / 부가세 분리** — 현재 `contract_amount`만 존재. 공급가액(`supply_amount`)과 부가세(`vat_amount`) 분리 필요
-2. **결재조건 (Payment Terms)** — 착수금/중도금/잔금의 비율, 금액, 지급조건을 별도 테이블로 관리 필요. 중도금은 공사 규모에 따라 여러 건(1차, 2차, 3차...)으로 분할 가능
+2. **결제조건 (Payment Terms)** — 착수금/중도금/잔금의 비율, 금액, 지급조건을 별도 테이블로 관리 필요. 중도금은 공사 규모에 따라 여러 건(1차, 2차, 3차...)으로 분할 가능
 3. **하자책임기간** — `defect_liability_months` (개월 수)
 4. **하자보증보율** — `defect_warranty_rate` (%, 보증보험증권 금액 산출 기준)
 5. **지체상환율** — `late_penalty_rate` (일률), `late_penalty_cap_rate` (상한율)
 6. **공사기간 연장 사유** — 기상악화 등 연장 가능 조건 기록
 7. **계약서 파일 첨부** — 체결된 계약서 원본(PDF/스캔본)을 첨부할 수 있어야 함. 변경계약 시 변경계약서도 별도 첨부. (기존 `Document` 도메인 모델과의 혼동을 피하기 위해 `contract_files`로 명명)
-8. **변경계약 처리 규칙** — 변경계약 시 금액·결재조건·계약조건이 어떻게 변경되는지 명확한 규칙 필요
+8. **변경계약 처리 규칙** — 변경계약 시 금액·결제조건·계약조건이 어떻게 변경되는지 명확한 규칙 필요
 
 > 참고: 도급인(발주처)은 `project.client`로 이미 관리됨. 수급인(시공사)은 항상 자사이므로 별도 필드 불필요.
 
@@ -66,7 +66,7 @@
 | `supply_amount` | 원 공급가액 | **변경 후** 총 공급가액 |
 | `vat_amount` | 원 부가세 | **변경 후** 총 부가세 |
 | `change_amount` | null | 증감액 (+/-) = 본 계약금액 - **직전 계약**금액 |
-| `ContractPaymentTerm` | 원 결재조건 | 변경 후 결재조건 (새로 등록) |
+| `ContractPaymentTerm` | 원 결제조건 | 변경 후 결제조건 (새로 등록) |
 | `defect_liability_months` 등 | 원 조건 | 변경 시 해당 값 기입, 변경 없으면 null |
 | `contract_files` | 원도급 계약서 | 변경계약서 첨부 |
 
@@ -75,7 +75,7 @@
 - 현재 유효 계약금액 = `latest_contract.contract_amount`
 - **`change_amount` 산출 기준**: 변경계약의 `change_amount` = 해당 계약의 `contract_amount` - **직전 계약**(previous_contract)의 `contract_amount`. 예) 원도급 1억 → 1차 변경 1.2억 → change_amount = +2천만, 2차 변경 1.15억 → change_amount = -5백만
 - 하자책임기간 등 계약조건 → 변경계약에 값이 있으면 해당 값, null이면 원도급 값 참조
-- 결재조건 → 각 Contract가 자체 `contract_payment_terms`를 소유. 현재 유효 결재조건 = 최신 계약의 것
+- 결제조건 → 각 Contract가 자체 `contract_payment_terms`를 소유. 현재 유효 결제조건 = 최신 계약의 것
 
 ---
 
@@ -110,9 +110,9 @@
 > 2. 기존 데이터 백필: `supply_amount = (contract_amount / 1.1).floor`, `vat_amount = contract_amount - supply_amount` (부가세 10% 기준 역산)
 > 3. `change_column_null`로 `null: false` 제약 추가
 
-### 2단계: 결재조건(ContractPaymentTerm) 모델 신규 생성
+### 2단계: 결제조건(ContractPaymentTerm) 모델 신규 생성
 
-계약별 결재 조건(착수금, 중도금, 잔금 등)을 관리하는 `ContractPaymentTerm` 모델을 생성해줘.
+계약별 결제 조건(착수금, 중도금, 잔금 등)을 관리하는 `ContractPaymentTerm` 모델을 생성해줘.
 
 **인덱스:**
 - `[contract_id, term_type, seq]` 유니크 인덱스 (DB 레벨 유니크 보장)
@@ -191,7 +191,7 @@ Contract 모델에 계약서 파일을 첨부할 수 있도록 Active Storage를
 - `current_contract_amount` 메서드 — 현재 유효 계약금액
 - `effective_defect_liability_months` 메서드 — 최신 계약부터 역순 탐색, null이 아닌 첫 번째 값 반환
 - `effective_late_penalty_rate` / `effective_late_penalty_cap_rate` — 동일 로직
-- `effective_contract_payment_terms` 메서드 — 최신 계약의 결재조건 반환
+- `effective_contract_payment_terms` 메서드 — 최신 계약의 결제조건 반환
 
 ### 4-2단계: Projects 테이블 중복 필드 정리
 
@@ -231,5 +231,5 @@ Contract 모델에 계약서 파일을 첨부할 수 있도록 Active Storage를
 ## 참고: 향후 확장 가능 항목 (이번에는 구현하지 않음)
 
 - 계약서 PDF 자동 생성
-- 결재조건 입금 확인 알림 (Job)
+- 결제조건 입금 확인 알림 (Job)
 - 도급인/수급인 서명 이미지 관리
