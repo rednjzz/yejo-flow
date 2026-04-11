@@ -402,11 +402,15 @@ export function ContractForm({
 
               return (
                 <div
-                  key={`${term.term_type}-${term.seq}-${index}`}
+                  key={
+                    term.id
+                      ? `term-${term.id}`
+                      : `new-${term.term_type}-${term.seq}`
+                  }
                   className={`rounded-md border p-3 ${term._destroy ? "hidden" : ""}`}
                 >
                   {/* Hidden fields */}
-                  {term.id && (
+                  {term.id != null && (
                     <input
                       type="hidden"
                       name={`${prefix}[id]`}

@@ -548,7 +548,7 @@ function FilesSection({ files }: { files: ContractFileProps[] }) {
 
 function NotesSection({ contract }: { contract: ContractProps }) {
   const hasNotes =
-    contract.period_note || contract.special_conditions || contract.description
+    contract.period_note ?? contract.special_conditions ?? contract.description
 
   if (!hasNotes) return null
 
