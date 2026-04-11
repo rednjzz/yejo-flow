@@ -20,9 +20,9 @@ Rails.application.routes.draw do
     resources :contracts, only: [:index, :create], module: :projects
   end
   resources :contracts, only: [:show, :update, :destroy] do
-    resources :contract_details, only: [:create], module: :contracts
+    resources :contract_items, only: [:create], module: :contracts
   end
-  resources :contract_details, only: [:update, :destroy]
+  resources :contract_items, only: [:update, :destroy]
 
   namespace :settings do
     resource :profile, only: [:show, :update]

@@ -14,7 +14,7 @@ class ContractPresenter < SimpleDelegator
       description: description,
       details_total: details_total,
       amount_mismatch: amount_mismatch?,
-      contract_details: contract_details.includes(:work_type).order(:sort_order).map { |d|
+      contract_items: contract_items.includes(:work_type).order(:sort_order).map { |d|
         {
           id: d.id,
           work_type_id: d.work_type_id,

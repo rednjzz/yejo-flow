@@ -3,7 +3,7 @@
 class WorkType < ApplicationRecord
   belongs_to :parent, class_name: "WorkType", optional: true
   has_many :children, class_name: "WorkType", foreign_key: :parent_id, dependent: :destroy, inverse_of: :parent
-  has_many :contract_details, dependent: :restrict_with_error
+  has_many :contract_items, dependent: :restrict_with_error
 
   validates :work_type_code, presence: true, uniqueness: true
   validates :work_type_name, presence: true

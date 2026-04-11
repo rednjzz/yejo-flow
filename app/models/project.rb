@@ -22,7 +22,7 @@ class Project < ApplicationRecord
   belongs_to :client, class_name: "Company"
   belongs_to :manager, class_name: "User", optional: true
   has_many :contracts, dependent: :destroy
-  has_many :contract_details, dependent: :destroy
+  has_many :contract_items, dependent: :destroy
 
   validates :project_code, presence: true, uniqueness: true
   validates :project_name, presence: true, length: {maximum: 200}

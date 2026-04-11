@@ -165,7 +165,7 @@ export default function ContractsIndex({ project, contracts }: Props) {
                 )}
 
                 {/* Contract Details Table */}
-                {contract.contract_details.length > 0 ? (
+                {contract.contract_items.length > 0 ? (
                   <div className="rounded-md border">
                     <table className="w-full">
                       <thead>
@@ -191,7 +191,7 @@ export default function ContractsIndex({ project, contracts }: Props) {
                         </tr>
                       </thead>
                       <tbody>
-                        {contract.contract_details.map((detail) => (
+                        {contract.contract_items.map((detail) => (
                           <tr key={detail.id} className="border-b">
                             <td className="px-3 py-2 text-sm">
                               {detail.work_type_name}

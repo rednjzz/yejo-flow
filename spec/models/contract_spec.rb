@@ -39,7 +39,7 @@ RSpec.describe Contract do
 
   describe "associations" do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_many(:contract_details).dependent(:destroy) }
+    it { is_expected.to have_many(:contract_items).dependent(:destroy) }
     it { is_expected.to have_many(:contract_payment_terms).dependent(:destroy) }
   end
 
@@ -76,8 +76,8 @@ RSpec.describe Contract do
   describe "#details_total" do
     it "sums contract detail amounts" do
       contract = create(:contract)
-      create(:contract_detail, contract: contract, quantity: nil, unit_price: nil, amount: 1_000_000)
-      create(:contract_detail, contract: contract, quantity: nil, unit_price: nil, amount: 2_000_000)
+      create(:contract_item, contract: contract, quantity: nil, unit_price: nil, amount: 1_000_000)
+      create(:contract_item, contract: contract, quantity: nil, unit_price: nil, amount: 2_000_000)
       expect(contract.details_total).to eq(3_000_000)
     end
   end
@@ -85,13 +85,13 @@ RSpec.describe Contract do
   describe "#amount_mismatch?" do
     it "returns true when details total differs from contract amount" do
       contract = create(:contract, supply_amount: 4_545_455, vat_amount: 454_545)
-      create(:contract_detail, contract: contract, quantity: nil, unit_price: nil, amount: 3_000_000)
+      create(:contract_item, contract: contract, quantity: nil, unit_price: nil, amount: 3_000_000)
       expect(contract.amount_mismatch?).to be true
     end
 
     it "returns false when details total matches contract amount" do
       contract = create(:contract, supply_amount: 4_545_455, vat_amount: 454_545)
-      create(:contract_detail, contract: contract, quantity: nil, unit_price: nil, amount: 5_000_000)
+      create(:contract_item, contract: contract, quantity: nil, unit_price: nil, amount: 5_000_000)
       expect(contract.amount_mismatch?).to be false
     end
 

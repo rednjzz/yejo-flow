@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ContractDetail < ApplicationRecord
+class ContractItem < ApplicationRecord
   belongs_to :contract
   belongs_to :project
   belongs_to :work_type

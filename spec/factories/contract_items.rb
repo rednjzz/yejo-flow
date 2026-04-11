@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :contract_detail do
+  factory :contract_item do
     association :contract
     project { contract.project }
     association :work_type

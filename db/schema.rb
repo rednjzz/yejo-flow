@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_11_030000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_11_030001) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -50,7 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_030000) do
     t.index ["company_type", "is_active"], name: "index_companies_on_company_type_and_is_active"
   end
 
-  create_table "contract_details", force: :cascade do |t|
+  create_table "contract_items", force: :cascade do |t|
     t.bigint "amount", default: 0, null: false
     t.integer "contract_id", null: false
     t.datetime "created_at", null: false
@@ -62,10 +62,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_030000) do
     t.bigint "unit_price"
     t.datetime "updated_at", null: false
     t.integer "work_type_id", null: false
-    t.index ["contract_id", "sort_order"], name: "index_contract_details_on_contract_id_and_sort_order"
-    t.index ["contract_id"], name: "index_contract_details_on_contract_id"
-    t.index ["project_id"], name: "index_contract_details_on_project_id"
-    t.index ["work_type_id"], name: "index_contract_details_on_work_type_id"
+    t.index ["contract_id", "sort_order"], name: "index_contract_items_on_contract_id_and_sort_order"
+    t.index ["contract_id"], name: "index_contract_items_on_contract_id"
+    t.index ["project_id"], name: "index_contract_items_on_project_id"
+    t.index ["work_type_id"], name: "index_contract_items_on_work_type_id"
   end
 
   create_table "contract_payment_terms", force: :cascade do |t|
@@ -167,9 +167,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_030000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "contract_details", "contracts"
-  add_foreign_key "contract_details", "projects"
-  add_foreign_key "contract_details", "work_types"
+  add_foreign_key "contract_items", "contracts"
+  add_foreign_key "contract_items", "projects"
+  add_foreign_key "contract_items", "work_types"
   add_foreign_key "contract_payment_terms", "contracts"
   add_foreign_key "contracts", "projects"
   add_foreign_key "projects", "companies", column: "client_id"

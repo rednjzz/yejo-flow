@@ -5,7 +5,7 @@ module Projects
     before_action :set_project
 
     def index
-      contracts = @project.contracts.includes(:contract_details).order(:contract_type, :change_seq)
+      contracts = @project.contracts.includes(:contract_items).order(:contract_type, :change_seq)
       work_types = WorkType.active.ordered.select(:id, :work_type_name)
 
       render inertia: {

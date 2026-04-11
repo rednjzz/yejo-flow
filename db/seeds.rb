@@ -65,14 +65,14 @@ projects_data.each do |pd|
   end
 
   # 도급내역 (원도급 계약에 샘플 내역 3건)
-  next if contract.contract_details.any?
+  next if contract.contract_items.any?
 
   [
     {wt: work_types[0], name: "터파기", unit: "m3", qty: 5000, price: 15_000},
     {wt: work_types[1], name: "콘크리트 타설", unit: "m3", qty: 3000, price: 180_000},
     {wt: work_types[2], name: "철골 제작 설치", unit: "ton", qty: 500, price: 3_500_000}
   ].each_with_index do |d, i|
-    contract.contract_details.create!(
+    contract.contract_items.create!(
       project: p,
       work_type: d[:wt],
       item_name: d[:name],
@@ -90,4 +90,4 @@ puts "  Companies: #{Company.count}"
 puts "  Work Types: #{WorkType.count}"
 puts "  Projects: #{Project.count}"
 puts "  Contracts: #{Contract.count}"
-puts "  Contract Details: #{ContractDetail.count}"
+puts "  Contract Details: #{ContractItem.count}"

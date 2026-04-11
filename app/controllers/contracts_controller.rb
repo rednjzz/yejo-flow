@@ -24,7 +24,7 @@ class ContractsController < InertiaController
   private
 
   def set_contract
-    @contract = Contract.includes(:contract_details, :project).find(params[:id])
+    @contract = Contract.includes(:contract_items, :project).find(params[:id])
   end
 
   def contract_params

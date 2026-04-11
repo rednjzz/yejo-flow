@@ -127,10 +127,10 @@ export interface ContractProps {
   description: string | null
   details_total: number
   amount_mismatch: boolean
-  contract_details: ContractDetailProps[]
+  contract_items: ContractItemProps[]
 }
 
-export interface ContractDetailProps {
+export interface ContractItemProps {
   id: number
   work_type_id: number
   work_type_name: string

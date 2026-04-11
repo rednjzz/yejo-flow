@@ -14,7 +14,7 @@ RSpec.describe WorkType do
   describe "associations" do
     it { is_expected.to belong_to(:parent).class_name("WorkType").optional }
     it { is_expected.to have_many(:children).class_name("WorkType").with_foreign_key(:parent_id).dependent(:destroy) }
-    it { is_expected.to have_many(:contract_details).dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:contract_items).dependent(:restrict_with_error) }
   end
 
   describe "scopes" do

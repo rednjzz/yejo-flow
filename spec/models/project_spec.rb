@@ -43,7 +43,7 @@ RSpec.describe Project do
     it { is_expected.to belong_to(:client).class_name("Company") }
     it { is_expected.to belong_to(:manager).class_name("User").optional }
     it { is_expected.to have_many(:contracts).dependent(:destroy) }
-    it { is_expected.to have_many(:contract_details).dependent(:destroy) }
+    it { is_expected.to have_many(:contract_items).dependent(:destroy) }
   end
 
   describe "callbacks" do

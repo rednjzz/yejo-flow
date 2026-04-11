@@ -7,7 +7,7 @@ class Contract < ApplicationRecord
   MAX_CONTRACT_FILE_SIZE = 20.megabytes
 
   belongs_to :project
-  has_many :contract_details, dependent: :destroy
+  has_many :contract_items, dependent: :destroy
   has_many :contract_payment_terms, dependent: :destroy
   has_many_attached :contract_files
 
@@ -27,11 +27,11 @@ class Contract < ApplicationRecord
   scope :changes, -> { where(contract_type: "change").order(:change_seq) }
 
   def details_total
-    contract_details.sum(:amount)
+    contract_items.sum(:amount)
   end
 
   def amount_mismatch?
-    contract_details.any? && details_total != contract_amount
+    contract_items.any? && details_total != contract_amount
   end
 
   def type_label
