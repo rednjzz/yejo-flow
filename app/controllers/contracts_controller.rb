@@ -37,7 +37,7 @@ class ContractsController < InertiaController
   end
 
   def contract_params
-    params.expect(contract: [
+    params.require(:contract).permit(
       :contract_no, :contract_type, :change_seq,
       :contract_date, :supply_amount, :vat_amount,
       :description,
@@ -50,6 +50,6 @@ class ContractsController < InertiaController
         :rate, :amount, :condition, :due_date,
         :paid_date, :paid_amount, :sort_order, :_destroy
       ]
-    ])
+    )
   end
 end
