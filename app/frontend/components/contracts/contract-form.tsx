@@ -91,8 +91,27 @@ export function ContractForm({
   }, [])
 
   // 결제조건 관리
-  const [paymentTerms, setPaymentTerms] = useState<PaymentTermRow[]>(
-    toRows(defaultValues?.contract_payment_terms),
+  const initialTerms = toRows(defaultValues?.contract_payment_terms)
+  const [paymentTerms, setPaymentTerms] = useState<PaymentTermRow[]>(initialTerms)
+
+  // 지급방식: 기존 중도금의 interim_method로 초기값 결정
+  const existingInterim = initialTerms.find((t) => t.term_type === "interim")
+  const [interimMethod, setInterimMethod] = useState<"milestone" | "monthly_billing">(
+    (existingInterim?.interim_method as "milestone" | "monthly_billing") || "milestone",
+  )
+
+  const handleInterimMethodChange = useCallback(
+    (method: string) => {
+      const newMethod = method as "milestone" | "monthly_billing"
+      setInterimMethod(newMethod)
+      // 기존 중도금 항목들의 interim_method를 일괄 변경
+      setPaymentTerms((prev) =>
+        prev.map((t) =>
+          t.term_type === "interim" ? { ...t, interim_method: newMethod } : t,
+        ),
+      )
+    },
+    [],
   )
 
   const addPaymentTerm = useCallback(
@@ -114,17 +133,20 @@ export function ContractForm({
         {
           term_type: termType,
           seq: nextSeq,
-          interim_method: termType === "interim" ? "milestone" : "",
-          rate: "",
-          amount: "",
-          condition: "",
+          interim_method: termType === "interim" ? interimMethod : "",
+          rate: termType === "interim" && interimMethod === "monthly_billing" ? "" : "",
+          amount: termType === "interim" && interimMethod === "monthly_billing" ? "" : "",
+          condition:
+            termType === "interim" && interimMethod === "monthly_billing"
+              ? "매월 기성 청구 승인 후"
+              : "",
           due_date: "",
           sort_order: nextSort,
           _destroy: false,
         },
       ])
     },
-    [paymentTerms],
+    [paymentTerms, interimMethod],
   )
 
   const removePaymentTerm = useCallback((index: number) => {
@@ -163,6 +185,9 @@ export function ContractForm({
 
   const hasAdvance = paymentTerms.some(
     (t) => t.term_type === "advance" && !t._destroy,
+  )
+  const hasInterim = paymentTerms.some(
+    (t) => t.term_type === "interim" && !t._destroy,
   )
   const hasFinal = paymentTerms.some(
     (t) => t.term_type === "final" && !t._destroy,
@@ -276,20 +301,58 @@ export function ContractForm({
 
           {/* 결제조건 */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium">결제조건</h4>
-              <div className="flex gap-1">
-                {!hasAdvance && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addPaymentTerm("advance")}
-                  >
-                    <Plus className="size-3" />
-                    착수금
-                  </Button>
-                )}
+            <h4 className="text-sm font-medium">결제조건</h4>
+
+            {/* 지급방식 선택 */}
+            <div className="bg-muted/30 rounded-md border p-3">
+              <Label className="mb-2 block text-xs font-medium">
+                중도금 지급방식
+              </Label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                    interimMethod === "milestone"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "hover:bg-muted"
+                  }`}
+                  onClick={() => handleInterimMethodChange("milestone")}
+                >
+                  분할 (마일스톤)
+                </button>
+                <button
+                  type="button"
+                  className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                    interimMethod === "monthly_billing"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "hover:bg-muted"
+                  }`}
+                  onClick={() => handleInterimMethodChange("monthly_billing")}
+                >
+                  기성 (월기성)
+                </button>
+              </div>
+              <p className="text-muted-foreground mt-1.5 text-xs">
+                {interimMethod === "milestone"
+                  ? "공정 마일스톤별로 사전 약정된 비율/금액으로 분할 지급"
+                  : "매월 기성 청구 금액에 따라 지급 (비율/금액 사전 약정 없음)"}
+              </p>
+            </div>
+
+            {/* 항목 추가 버튼 */}
+            <div className="flex gap-1">
+              {!hasAdvance && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addPaymentTerm("advance")}
+                >
+                  <Plus className="size-3" />
+                  착수금
+                </Button>
+              )}
+              {interimMethod === "milestone" && (
                 <Button
                   type="button"
                   variant="outline"
@@ -299,18 +362,29 @@ export function ContractForm({
                   <Plus className="size-3" />
                   중도금
                 </Button>
-                {!hasFinal && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addPaymentTerm("final")}
-                  >
-                    <Plus className="size-3" />
-                    잔금
-                  </Button>
-                )}
-              </div>
+              )}
+              {interimMethod === "monthly_billing" && !hasInterim && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addPaymentTerm("interim")}
+                >
+                  <Plus className="size-3" />
+                  중도금 (기성)
+                </Button>
+              )}
+              {!hasFinal && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addPaymentTerm("final")}
+                >
+                  <Plus className="size-3" />
+                  잔금
+                </Button>
+              )}
             </div>
 
             {paymentTerms.length === 0 && (
@@ -321,12 +395,17 @@ export function ContractForm({
 
             {paymentTerms.map((term, index) => {
               const prefix = `contract[contract_payment_terms_attributes][${index}]`
+              const isMonthlyInterim =
+                term.term_type === "interim" &&
+                term.interim_method === "monthly_billing"
               const termLabel =
                 term.term_type === "advance"
                   ? "착수금"
                   : term.term_type === "final"
                     ? "잔금"
-                    : `중도금 ${term.seq}차`
+                    : isMonthlyInterim
+                      ? "중도금 (월기성)"
+                      : `중도금 ${term.seq}차`
 
               return (
                 <div
@@ -360,7 +439,7 @@ export function ContractForm({
                     <input
                       type="hidden"
                       name={`${prefix}[interim_method]`}
-                      value={term.interim_method || "milestone"}
+                      value={term.interim_method || interimMethod}
                     />
                   )}
                   {term._destroy && (
@@ -383,33 +462,8 @@ export function ContractForm({
                     </Button>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <div className="space-y-1">
-                      <Label className="text-xs">비율 (%)</Label>
-                      <Input
-                        name={`${prefix}[rate]`}
-                        type="number"
-                        step="0.01"
-                        min={0}
-                        max={100}
-                        value={term.rate}
-                        onChange={(e) =>
-                          updatePaymentTerm(index, "rate", e.target.value)
-                        }
-                        placeholder="예: 30"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">금액</Label>
-                      <CurrencyInput
-                        name={`${prefix}[amount]`}
-                        value={term.amount}
-                        onValueChange={(raw) =>
-                          updatePaymentTerm(index, "amount", raw)
-                        }
-                        placeholder="0"
-                      />
-                    </div>
+                  {isMonthlyInterim ? (
+                    /* 기성 방식 중도금: 조건만 입력 */
                     <div className="space-y-1">
                       <Label className="text-xs">지급조건</Label>
                       <Input
@@ -418,10 +472,59 @@ export function ContractForm({
                         onChange={(e) =>
                           updatePaymentTerm(index, "condition", e.target.value)
                         }
-                        placeholder="예: 계약후 15일이내"
+                        placeholder="예: 매월 기성 청구 승인 후"
                       />
+                      <p className="text-muted-foreground text-xs">
+                        기성 방식은 실제 기성 승인 금액에 따라 지급되므로
+                        비율/금액을 사전 지정하지 않습니다.
+                      </p>
                     </div>
-                  </div>
+                  ) : (
+                    /* 분할 방식 또는 착수금/잔금: 비율+금액+조건 */
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <div className="space-y-1">
+                        <Label className="text-xs">비율 (%)</Label>
+                        <Input
+                          name={`${prefix}[rate]`}
+                          type="number"
+                          step="0.01"
+                          min={0}
+                          max={100}
+                          value={term.rate}
+                          onChange={(e) =>
+                            updatePaymentTerm(index, "rate", e.target.value)
+                          }
+                          placeholder="예: 30"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">금액</Label>
+                        <CurrencyInput
+                          name={`${prefix}[amount]`}
+                          value={term.amount}
+                          onValueChange={(raw) =>
+                            updatePaymentTerm(index, "amount", raw)
+                          }
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">지급조건</Label>
+                        <Input
+                          name={`${prefix}[condition]`}
+                          value={term.condition}
+                          onChange={(e) =>
+                            updatePaymentTerm(
+                              index,
+                              "condition",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="예: 계약후 15일이내"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             })}
