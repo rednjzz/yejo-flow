@@ -131,7 +131,7 @@ export interface ContractFileProps {
 
 export interface ContractProps {
   id: number
-  contract_no: string
+  contract_code: string
   contract_type: string
   type_label: string
   change_seq: number | null
@@ -183,7 +183,7 @@ export interface PaymentTermFormData {
 
 export interface ContractFormData {
   id?: number
-  contract_no: string
+  contract_code: string
   contract_type: string
   change_seq: number | null
   contract_date: string

@@ -59,7 +59,7 @@ projects_data.each do |pd|
 
   # 원도급 계약
   contract = Contract.find_or_create_by!(project: p, contract_type: "original") do |con|
-    con.contract_no = "#{pd[:code]}-ORG"
+    con.contract_code = "#{pd[:code]}-C001"
     con.contract_date = pd[:start]
     con.contract_amount = pd[:amount]
   end

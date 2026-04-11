@@ -4,7 +4,7 @@ class ContractPresenter < SimpleDelegator
   def as_props
     {
       id: id,
-      contract_no: contract_no,
+      contract_code: contract_code,
       contract_type: contract_type,
       type_label: type_label,
       change_seq: change_seq,
@@ -33,7 +33,7 @@ class ContractPresenter < SimpleDelegator
   def as_form_props
     {
       id: id,
-      contract_no: contract_no,
+      contract_code: contract_code,
       contract_type: contract_type,
       change_seq: change_seq,
       contract_date: contract_date.iso8601,

@@ -38,7 +38,7 @@ class ContractsController < InertiaController
 
   def contract_params
     params.require(:contract).permit(
-      :contract_no, :contract_type, :change_seq,
+      :contract_type, :change_seq,
       :contract_date, :supply_amount, :vat_amount,
       :description,
       :defect_liability_months, :defect_warranty_rate,

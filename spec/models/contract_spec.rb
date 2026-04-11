@@ -6,7 +6,10 @@ RSpec.describe Contract do
   subject { build(:contract) }
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:contract_no) }
+    it "auto-generates contract_code" do
+      contract = create(:contract)
+      expect(contract.contract_code).to be_present
+    end
     it { is_expected.to validate_presence_of(:contract_type) }
     it { is_expected.to validate_inclusion_of(:contract_type).in_array(Contract::TYPES) }
     it { is_expected.to validate_presence_of(:contract_date) }
@@ -41,6 +44,30 @@ RSpec.describe Contract do
   end
 
   describe "callbacks" do
+    describe "#set_contract_code" do
+      it "auto-generates contract code on create" do
+        project = create(:project, project_code: "2026-001")
+        contract = build(:contract, project: project, contract_code: nil)
+        contract.valid?
+        expect(contract.contract_code).to eq("2026-001-C001")
+      end
+
+      it "increments sequence number" do
+        project = create(:project, project_code: "2026-001")
+        create(:contract, project: project)
+        contract = build(:contract, project: project, contract_code: nil)
+        contract.valid?
+        expect(contract.contract_code).to eq("2026-001-C002")
+      end
+
+      it "does not overwrite existing contract code" do
+        project = create(:project)
+        contract = build(:contract, project: project, contract_code: "CUSTOM-001")
+        contract.valid?
+        expect(contract.contract_code).to eq("CUSTOM-001")
+      end
+    end
+
     describe "#calculate_contract_amount" do
       it "auto-calculates contract_amount from supply_amount + vat_amount" do
         contract = build(:contract, supply_amount: 100_000_000, vat_amount: 10_000_000)

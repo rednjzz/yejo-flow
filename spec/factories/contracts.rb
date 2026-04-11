@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :contract do
     association :project
-    sequence(:contract_no) { |n| "CON-#{n.to_s.rjust(3, "0")}" }
+    contract_code { nil }
     contract_type { "original" }
     contract_date { Date.current }
     supply_amount { 909_090_909 }

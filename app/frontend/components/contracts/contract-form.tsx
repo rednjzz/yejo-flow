@@ -203,14 +203,12 @@ export function ContractForm({
           {/* 기본정보 */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="contract_no">
-                계약번호 <span className="text-destructive">*</span>
-              </Label>
+              <Label htmlFor="contract_code">계약코드</Label>
               <Input
-                id="contract_no"
-                name="contract[contract_no]"
-                defaultValue={defaultValues?.contract_no ?? ""}
-                required
+                id="contract_code"
+                value={defaultValues?.contract_code ?? "자동 생성"}
+                readOnly
+                className="bg-muted"
               />
             </div>
             <div className="space-y-2">

@@ -165,7 +165,7 @@ function ContractCard({ contract }: { contract: ContractProps }) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">
-            {contract.type_label} — {contract.contract_no}
+            {contract.type_label} — {contract.contract_code}
           </CardTitle>
           <div className="flex items-center gap-3">
             <div className="text-muted-foreground flex items-center gap-2 text-sm">

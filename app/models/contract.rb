@@ -13,13 +13,14 @@ class Contract < ApplicationRecord
     reject_if: proc { |attrs| attrs["term_type"].blank? }
   has_many_attached :contract_files
 
-  validates :contract_no, presence: true
+  validates :contract_code, presence: true, uniqueness: true
   validates :contract_type, presence: true, inclusion: {in: TYPES}
   validates :contract_date, presence: true
   validates :supply_amount, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :vat_amount, presence: true, numericality: {greater_than_or_equal_to: 0}
   validate :contract_amount_must_be_positive
 
+  before_validation :set_contract_code, on: :create
   before_validation :calculate_contract_amount
   before_validation :calculate_change_amount, if: -> { contract_type == "change" }
 
@@ -70,6 +71,19 @@ class Contract < ApplicationRecord
   end
 
   private
+
+  def set_contract_code
+    self.contract_code ||= generate_contract_code
+  end
+
+  def generate_contract_code
+    return unless project
+
+    prefix = project.project_code
+    last = self.class.where("contract_code LIKE ?", "#{prefix}-C%").order(:contract_code).last
+    seq = last ? last.contract_code.split("-C").last.to_i + 1 : 1
+    "#{prefix}-C#{seq.to_s.rjust(3, "0")}"
+  end
 
   def contract_amount_must_be_positive
     return unless supply_amount.present? && vat_amount.present?

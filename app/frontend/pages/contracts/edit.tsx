@@ -26,7 +26,7 @@ export default function ContractEdit({ contract, project }: Props) {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title={`${contract.contract_no} 수정`} />
+      <Head title={`${contract.contract_code} 수정`} />
 
       <div className="flex h-full flex-1 flex-col gap-4 p-4">
         <div className="flex items-center gap-3">
