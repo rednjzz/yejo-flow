@@ -177,6 +177,19 @@ export interface ContractItemProps {
   sort_order: number
 }
 
+export interface PaymentTermFormData {
+  id?: number
+  term_type: string
+  seq: number
+  interim_method: string
+  rate: number | string
+  amount: number | string
+  condition: string
+  due_date: string
+  sort_order: number
+  _destroy?: boolean
+}
+
 export interface ContractFormData {
   id?: number
   contract_no: string
@@ -194,6 +207,7 @@ export interface ContractFormData {
   period_note: string
   special_conditions: string
   contract_files: ContractFileProps[]
+  contract_payment_terms: ContractPaymentTermProps[]
 }
 
 export interface SidebarProject {

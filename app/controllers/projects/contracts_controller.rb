@@ -41,7 +41,12 @@ module Projects
         :defect_liability_months, :defect_warranty_rate,
         :late_penalty_rate, :late_penalty_cap_rate,
         :period_note, :special_conditions,
-        contract_files: []
+        contract_files: [],
+        contract_payment_terms_attributes: [
+          :id, :term_type, :seq, :interim_method,
+          :rate, :amount, :condition, :due_date,
+          :paid_date, :paid_amount, :sort_order, :_destroy
+        ]
       ])
     end
   end

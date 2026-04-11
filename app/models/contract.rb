@@ -9,6 +9,8 @@ class Contract < ApplicationRecord
   belongs_to :project
   has_many :contract_items, dependent: :destroy
   has_many :contract_payment_terms, dependent: :destroy
+  accepts_nested_attributes_for :contract_payment_terms, allow_destroy: true,
+    reject_if: proc { |attrs| attrs["term_type"].blank? }
   has_many_attached :contract_files
 
   validates :contract_no, presence: true

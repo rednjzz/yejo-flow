@@ -47,7 +47,8 @@ class ContractPresenter < SimpleDelegator
       late_penalty_cap_rate: late_penalty_cap_rate&.to_f,
       period_note: period_note,
       special_conditions: special_conditions,
-      contract_files: contract_file_props
+      contract_files: contract_file_props,
+      contract_payment_terms: payment_term_props
     }
   end
 

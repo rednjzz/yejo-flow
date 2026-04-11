@@ -165,34 +165,34 @@ function ContractCard({ contract }: { contract: ContractProps }) {
       </CardHeader>
 
       <CardContent className="space-y-5">
-        {/* ① 기본정보 */}
+        {/* ① 계약금액 */}
         <AmountSection contract={contract} />
 
-        {/* ② 계약조건 */}
-        <ConditionsSection contract={contract} />
-
-        {/* ③ 결재조건 */}
+        {/* ② 결제조건 */}
         {contract.contract_payment_terms.length > 0 && (
-          <CollapsibleSection title="결재조건" defaultOpen>
+          <CollapsibleSection title="결제조건" defaultOpen>
             <PaymentTermsTable contract={contract} />
           </CollapsibleSection>
         )}
 
-        {/* ④ 내역항목 */}
-        <CollapsibleSection
-          title="내역항목"
-          defaultOpen={contract.contract_items.length <= 10}
-        >
-          <ContractItemsTable contract={contract} />
-        </CollapsibleSection>
+        {/* ③ 계약조건 */}
+        <ConditionsSection contract={contract} />
+
+        {/* ④ 비고/특기사항 */}
+        <NotesSection contract={contract} />
 
         {/* ⑤ 첨부파일 */}
         {contract.contract_files.length > 0 && (
           <FilesSection files={contract.contract_files} />
         )}
 
-        {/* 비고/특기사항 */}
-        <NotesSection contract={contract} />
+        {/* ⑥ 내역항목 */}
+        <CollapsibleSection
+          title="내역항목"
+          defaultOpen={contract.contract_items.length <= 10}
+        >
+          <ContractItemsTable contract={contract} />
+        </CollapsibleSection>
       </CardContent>
     </Card>
   )
@@ -345,7 +345,7 @@ function InfoRow({
   )
 }
 
-// --- ③ 결재조건 테이블 ---
+// --- ③ 결제조건 테이블 ---
 
 function PaymentTermsTable({ contract }: { contract: ContractProps }) {
   return (
