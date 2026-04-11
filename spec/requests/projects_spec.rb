@@ -62,17 +62,6 @@ RSpec.describe "Projects" do
     end
   end
 
-  describe "GET /projects/:id/edit" do
-    let(:project) { create(:project) }
-
-    before { create(:company, :client) }
-
-    it "returns success" do
-      get edit_project_path(project)
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "PATCH /projects/:id" do
     let(:project) { create(:project) }
 

@@ -12,6 +12,10 @@ module Projects
 
       render inertia: {
         project: ProjectPresenter.new(@project).as_detail_props,
+        form_data: ProjectPresenter.new(@project).as_form_props,
+        clients: Company.clients.active.select(:id, :company_name).map { |c| {id: c.id, company_name: c.company_name} },
+        managers: User.managers.select(:id, :name).map { |u| {id: u.id, name: u.name} },
+        statuses: Project::STATUSES.map { |s| {value: s, label: Project::STATUS_LABELS[s]} },
         contracts: contracts.map { |c| ContractPresenter.new(c).as_props },
         work_types: work_types.map { |wt| {id: wt.id, work_type_name: wt.work_type_name} }
       }

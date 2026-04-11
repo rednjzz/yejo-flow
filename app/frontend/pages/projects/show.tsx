@@ -5,13 +5,29 @@ import AppLayout from "@/layouts/app-layout"
 import ProjectLayout from "@/layouts/project/project-layout"
 import { formatCurrency } from "@/lib/format"
 import { projectPath, projectsPath } from "@/routes"
-import type { BreadcrumbItem, ProjectDetail } from "@/types"
+import type {
+  BreadcrumbItem,
+  Company,
+  ProjectDetail,
+  ProjectFormData,
+  StatusOption,
+} from "@/types"
 
 interface Props {
   project: ProjectDetail
+  form_data: ProjectFormData
+  clients: Company[]
+  managers: { id: number; name: string }[]
+  statuses: StatusOption[]
 }
 
-export default function ProjectShow({ project }: Props) {
+export default function ProjectShow({
+  project,
+  form_data,
+  clients,
+  managers,
+  statuses,
+}: Props) {
   const breadcrumbs: BreadcrumbItem[] = [
     { title: "프로젝트", href: projectsPath() },
     { title: project.project_name, href: projectPath(project.id) },
@@ -21,13 +37,20 @@ export default function ProjectShow({ project }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={project.project_name} />
 
-      <ProjectLayout project={project} activeTab="overview">
+      <ProjectLayout
+        project={project}
+        activeTab="overview"
+        formData={form_data}
+        clients={clients}
+        managers={managers}
+        statuses={statuses}
+      >
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <KpiCard
             title="도급금액"
             value={`${formatCurrency(project.contract_amount)}원`}
-            description={`부가세 ${formatCurrency(project.vat_amount)}원`}
+            description={project.amount_in_billion}
           />
           <KpiCard
             title="기성 누계"

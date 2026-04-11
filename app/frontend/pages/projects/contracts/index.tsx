@@ -35,13 +35,20 @@ import {
 } from "@/routes"
 import type {
   BreadcrumbItem,
+  Company,
   ContractFileProps,
   ContractProps,
   ProjectDetail,
+  ProjectFormData,
+  StatusOption,
 } from "@/types"
 
 interface Props {
   project: ProjectDetail
+  form_data: ProjectFormData
+  clients: Company[]
+  managers: { id: number; name: string }[]
+  statuses: StatusOption[]
   contracts: ContractProps[]
 }
 
@@ -85,7 +92,14 @@ function SectionHeader({
 
 // --- 페이지 ---
 
-export default function ContractsIndex({ project, contracts }: Props) {
+export default function ContractsIndex({
+  project,
+  form_data,
+  clients,
+  managers,
+  statuses,
+  contracts,
+}: Props) {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const breadcrumbs: BreadcrumbItem[] = [
@@ -98,7 +112,14 @@ export default function ContractsIndex({ project, contracts }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={`${project.project_name} - 도급계약`} />
 
-      <ProjectLayout project={project} activeTab="contracts">
+      <ProjectLayout
+        project={project}
+        activeTab="contracts"
+        formData={form_data}
+        clients={clients}
+        managers={managers}
+        statuses={statuses}
+      >
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">도급계약</h3>

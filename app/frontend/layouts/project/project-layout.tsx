@@ -1,16 +1,25 @@
 import { Link } from "@inertiajs/react"
 import { ArrowLeft, Pencil } from "lucide-react"
 import type { PropsWithChildren } from "react"
+import { useState } from "react"
 
 import { ProjectStatusBadge } from "@/components/project-status-badge"
+import { ProjectForm } from "@/components/projects/project-form"
 import { Button } from "@/components/ui/button"
 import {
-  editProjectPath,
-  projectContractsPath,
-  projectPath,
-  projectsPath,
-} from "@/routes"
-import type { ProjectDetail } from "@/types"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+import { projectContractsPath, projectPath, projectsPath } from "@/routes"
+import type {
+  Company,
+  ProjectDetail,
+  ProjectFormData,
+  StatusOption,
+} from "@/types"
 
 const TABS = [
   { key: "overview", label: "종합현황", enabled: true },
@@ -37,13 +46,23 @@ function getTabHref(projectId: number, tabKey: string): string {
 interface ProjectLayoutProps extends PropsWithChildren {
   project: ProjectDetail
   activeTab: string
+  formData?: ProjectFormData
+  clients?: Company[]
+  managers?: { id: number; name: string }[]
+  statuses?: StatusOption[]
 }
 
 export default function ProjectLayout({
   project,
   activeTab,
+  formData,
+  clients,
+  managers,
+  statuses,
   children,
 }: ProjectLayoutProps) {
+  const [editOpen, setEditOpen] = useState(false)
+
   return (
     <div className="flex h-full flex-1 flex-col gap-4 p-4">
       {/* Header */}
@@ -65,12 +84,16 @@ export default function ProjectLayout({
           <ProjectStatusBadge status={project.status} />
         </div>
 
-        <Button variant="outline" size="sm" asChild>
-          <Link href={editProjectPath(project.id)}>
+        {formData && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setEditOpen(true)}
+          >
             <Pencil className="size-4" />
             수정
-          </Link>
-        </Button>
+          </Button>
+        )}
       </div>
 
       {/* Tab Bar */}
@@ -109,6 +132,30 @@ export default function ProjectLayout({
 
       {/* Tab Content */}
       <div className="flex-1">{children}</div>
+
+      {/* 수정 Sheet */}
+      {formData && clients && managers && statuses && (
+        <Sheet open={editOpen} onOpenChange={setEditOpen}>
+          <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>현장 정보 수정</SheetTitle>
+              <SheetDescription>{project.project_name}</SheetDescription>
+            </SheetHeader>
+            <div className="px-4 pb-4">
+              <ProjectForm
+                action={projectPath(project.id)}
+                method="patch"
+                projectCode={formData.project_code}
+                clients={clients}
+                managers={managers}
+                statuses={statuses}
+                defaultValues={formData}
+                allowedTransitions={formData.allowed_transitions}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
     </div>
   )
 }

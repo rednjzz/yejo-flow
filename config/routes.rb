@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   get :dashboard, to: "dashboard#index"
 
-  resources :projects, except: [:new] do
+  resources :projects, except: [:new, :edit] do
     resources :contracts, only: [:index, :create], module: :projects
   end
   resources :contracts, only: [:show, :edit, :update, :destroy] do
