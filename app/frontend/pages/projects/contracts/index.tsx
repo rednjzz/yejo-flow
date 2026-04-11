@@ -169,11 +169,15 @@ function ContractCard({ contract }: { contract: ContractProps }) {
         <AmountSection contract={contract} />
 
         {/* ② 결제조건 */}
-        {contract.contract_payment_terms.length > 0 && (
-          <CollapsibleSection title="결제조건" defaultOpen>
+        <CollapsibleSection title="결제조건" defaultOpen>
+          {contract.contract_payment_terms.length > 0 ? (
             <PaymentTermsTable contract={contract} />
-          </CollapsibleSection>
-        )}
+          ) : (
+            <p className="text-muted-foreground text-sm">
+              등록된 결제조건이 없습니다.
+            </p>
+          )}
+        </CollapsibleSection>
 
         {/* ③ 계약조건 */}
         <ConditionsSection contract={contract} />
