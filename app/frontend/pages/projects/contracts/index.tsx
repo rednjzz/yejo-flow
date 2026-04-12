@@ -170,6 +170,7 @@ function ContractCard({ contract }: { contract: ContractProps }) {
   const [editOpen, setEditOpen] = useState(false)
 
   return (
+    <>
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -230,43 +231,44 @@ function ContractCard({ contract }: { contract: ContractProps }) {
           <ContractItemsTable contract={contract} />
         </CollapsibleSection>
       </CardContent>
-
-      {/* 수정 Sheet */}
-      <Sheet open={editOpen} onOpenChange={setEditOpen}>
-        <SheetContent side="right" className="overflow-y-auto sm:max-w-lg">
-          <SheetHeader>
-            <SheetTitle>계약 수정</SheetTitle>
-            <SheetDescription>
-              {contract.type_label} — {contract.contract_code}
-            </SheetDescription>
-          </SheetHeader>
-          <div className="px-4 pb-4">
-            <ContractForm
-              action={contractPath(contract.id)}
-              method="patch"
-              defaultValues={{
-                id: contract.id,
-                contract_code: contract.contract_code,
-                contract_type: contract.contract_type,
-                change_seq: contract.change_seq,
-                contract_date: contract.contract_date,
-                supply_amount: contract.supply_amount,
-                vat_amount: contract.vat_amount,
-                description: contract.description ?? "",
-                defect_liability_months: contract.defect_liability_months ?? "",
-                defect_warranty_rate: contract.defect_warranty_rate ?? "",
-                late_penalty_rate: contract.late_penalty_rate ?? "",
-                late_penalty_cap_rate: contract.late_penalty_cap_rate ?? "",
-                period_note: contract.period_note ?? "",
-                special_conditions: contract.special_conditions ?? "",
-                contract_files: contract.contract_files,
-                contract_payment_terms: contract.contract_payment_terms,
-              }}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
     </Card>
+
+    {/* 수정 Sheet */}
+    <Sheet open={editOpen} onOpenChange={setEditOpen}>
+      <SheetContent side="right" className="overflow-y-auto sm:max-w-lg">
+        <SheetHeader>
+          <SheetTitle>계약 수정</SheetTitle>
+          <SheetDescription>
+            {contract.type_label} — {contract.contract_code}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="px-4 pb-4">
+          <ContractForm
+            action={contractPath(contract.id)}
+            method="patch"
+            defaultValues={{
+              id: contract.id,
+              contract_code: contract.contract_code,
+              contract_type: contract.contract_type,
+              change_seq: contract.change_seq,
+              contract_date: contract.contract_date,
+              supply_amount: contract.supply_amount,
+              vat_amount: contract.vat_amount,
+              description: contract.description ?? "",
+              defect_liability_months: contract.defect_liability_months ?? "",
+              defect_warranty_rate: contract.defect_warranty_rate ?? "",
+              late_penalty_rate: contract.late_penalty_rate ?? "",
+              late_penalty_cap_rate: contract.late_penalty_cap_rate ?? "",
+              period_note: contract.period_note ?? "",
+              special_conditions: contract.special_conditions ?? "",
+              contract_files: contract.contract_files,
+              contract_payment_terms: contract.contract_payment_terms,
+            }}
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
+    </>
   )
 }
 

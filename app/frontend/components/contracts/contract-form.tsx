@@ -116,7 +116,7 @@ export function ContractForm({
     setVatValue(raw)
   }, [])
 
-  // --- 결제조건 ---
+  // --- 결제조건 state ---
   const initialTerms = toRows(defaultValues?.contract_payment_terms)
   const [paymentTerms, setPaymentTerms] =
     useState<PaymentTermRow[]>(initialTerms)
@@ -129,6 +129,102 @@ export function ContractForm({
       "milestone",
   )
 
+  // --- 자동 저장 (edit 모드) ---
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
+  const savedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const paymentTermsRef = useRef(paymentTerms)
+  paymentTermsRef.current = paymentTerms
+
+  const buildPayload = useCallback(() => {
+    const terms = paymentTermsRef.current
+    const termsAttrs: Record<string, Record<string, unknown>> = {}
+    terms.forEach((t, i) => {
+      termsAttrs[i.toString()] = {
+        ...(t.id != null ? { id: t.id } : {}),
+        term_type: t.term_type,
+        seq: t.seq,
+        interim_method: t.term_type === "interim" ? t.interim_method : "",
+        rate: t.rate || null,
+        amount: t.amount || null,
+        condition: t.condition,
+        sort_order: t.sort_order,
+        _destroy: t._destroy ? "1" : "0",
+      }
+    })
+
+    return {
+      contract: {
+        contract_type: contractType,
+        change_seq: changeSeq || null,
+        contract_date: contractDate,
+        supply_amount: supplyAmount,
+        vat_amount:
+          vatManual && vatValue !== "" ? vatValue : autoVat.toString(),
+        description,
+        defect_liability_months: defectMonths || null,
+        defect_warranty_rate: defectRate || null,
+        late_penalty_rate: penaltyRate || null,
+        late_penalty_cap_rate: penaltyCapRate || null,
+        period_note: periodNote,
+        special_conditions: specialConditions,
+        contract_payment_terms_attributes: termsAttrs,
+      },
+    }
+  }, [
+    contractType,
+    changeSeq,
+    contractDate,
+    supplyAmount,
+    vatManual,
+    vatValue,
+    autoVat,
+    description,
+    defectMonths,
+    defectRate,
+    penaltyRate,
+    penaltyCapRate,
+    periodNote,
+    specialConditions,
+  ])
+
+  const saveForm = useCallback(() => {
+    if (!isEdit) return
+    clearTimeout(savedTimerRef.current)
+    setSaveStatus("saving")
+    router.patch(action, buildPayload(), {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        setSaveStatus("saved")
+        savedTimerRef.current = setTimeout(() => setSaveStatus("idle"), 2000)
+      },
+      onError: () => setSaveStatus("error"),
+    })
+  }, [isEdit, action, buildPayload])
+
+  const saveFormRef = useRef(saveForm)
+  saveFormRef.current = saveForm
+  const saveFormNow = useCallback(() => {
+    setTimeout(() => saveFormRef.current(), 0)
+  }, [])
+
+  const updateAndSave = useCallback(
+    (setter: (v: string) => void, value: string) => {
+      setter(value)
+      if (isEdit) saveFormNow()
+    },
+    [isEdit, saveFormNow],
+  )
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      router.post(action, buildPayload())
+    },
+    [action, buildPayload],
+  )
+
+  // --- 결제조건 핸들러 ---
   const handleInterimMethodChange = useCallback(
     (m: string) => {
       const newMethod = m as "milestone" | "monthly_billing"
@@ -219,105 +315,6 @@ export function ContractForm({
   )
   const hasFinal = paymentTerms.some(
     (t) => t.term_type === "final" && !t._destroy,
-  )
-
-  // --- 자동 저장 (edit 모드) ---
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
-  const savedTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const paymentTermsRef = useRef(paymentTerms)
-  paymentTermsRef.current = paymentTerms
-
-  const buildPayload = useCallback(() => {
-    const terms = paymentTermsRef.current
-    const termsAttrs: Record<string, Record<string, unknown>> = {}
-    terms.forEach((t, i) => {
-      termsAttrs[i.toString()] = {
-        ...(t.id != null ? { id: t.id } : {}),
-        term_type: t.term_type,
-        seq: t.seq,
-        interim_method: t.term_type === "interim" ? t.interim_method : "",
-        rate: t.rate || null,
-        amount: t.amount || null,
-        condition: t.condition,
-        sort_order: t.sort_order,
-        _destroy: t._destroy ? "1" : "0",
-      }
-    })
-
-    return {
-      contract: {
-        contract_type: contractType,
-        change_seq: changeSeq || null,
-        contract_date: contractDate,
-        supply_amount: supplyAmount,
-        vat_amount:
-          vatManual && vatValue !== "" ? vatValue : autoVat.toString(),
-        description,
-        defect_liability_months: defectMonths || null,
-        defect_warranty_rate: defectRate || null,
-        late_penalty_rate: penaltyRate || null,
-        late_penalty_cap_rate: penaltyCapRate || null,
-        period_note: periodNote,
-        special_conditions: specialConditions,
-        contract_payment_terms_attributes: termsAttrs,
-      },
-    }
-  }, [
-    contractType,
-    changeSeq,
-    contractDate,
-    supplyAmount,
-    vatManual,
-    vatValue,
-    autoVat,
-    description,
-    defectMonths,
-    defectRate,
-    penaltyRate,
-    penaltyCapRate,
-    periodNote,
-    specialConditions,
-  ])
-
-  const saveForm = useCallback(() => {
-    if (!isEdit) return
-    clearTimeout(savedTimerRef.current)
-    setSaveStatus("saving")
-    router.patch(action, buildPayload(), {
-      preserveState: true,
-      preserveScroll: true,
-      onSuccess: () => {
-        setSaveStatus("saved")
-        savedTimerRef.current = setTimeout(() => setSaveStatus("idle"), 2000)
-      },
-      onError: () => setSaveStatus("error"),
-    })
-  }, [isEdit, action, buildPayload])
-
-  // 즉시 저장 (ref 기반, 콜백 등록 시점의 state 캡처 문제 회피)
-  const saveFormRef = useRef(saveForm)
-  saveFormRef.current = saveForm
-  const saveFormNow = useCallback(() => {
-    // 다음 tick에서 실행하여 state 업데이트 반영
-    setTimeout(() => saveFormRef.current(), 0)
-  }, [])
-
-  // Select 변경 시 즉시 저장
-  const updateAndSave = useCallback(
-    (setter: (v: string) => void, value: string) => {
-      setter(value)
-      if (isEdit) saveFormNow()
-    },
-    [isEdit, saveFormNow],
-  )
-
-  // 신규 등록 (create)
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault()
-      router.post(action, buildPayload())
-    },
-    [action, buildPayload],
   )
 
   return (
