@@ -43,4 +43,4 @@ node_modules
 .DS_Store
 
 # Prompt drafts (local only)
-/docs/prompts/test.md
+/docs/tmp/*
