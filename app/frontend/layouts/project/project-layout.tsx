@@ -24,12 +24,10 @@ import type {
 const TABS = [
   { key: "overview", label: "종합현황", enabled: true },
   { key: "contracts", label: "도급계약", enabled: true },
+  { key: "schedule", label: "공정관리", enabled: false },
   { key: "cost", label: "원가관리", enabled: false },
-  { key: "billing", label: "기성관리", enabled: false },
-  { key: "subcontract", label: "하도급", enabled: false },
-  { key: "labor", label: "노무", enabled: false },
-  { key: "equipment", label: "장비", enabled: false },
-  { key: "material", label: "자재", enabled: false },
+  { key: "safety", label: "안전관리", enabled: false },
+  { key: "quality", label: "품질관리", enabled: false },
 ]
 
 function getTabHref(projectId: number, tabKey: string): string {
