@@ -1,13 +1,13 @@
 # Name of your application. Used to uniquely configure containers.
-service: react_starter_kit
+service: flow
 
 # Name of the container image (use your-user/app-name on external registries).
-image: react_starter_kit
+image: rednjzz/flow
 
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - 206.189.36.128
 
   # Uncomment to enable SSR:
   # vite_ssr:
@@ -29,14 +29,17 @@ servers:
 #
 # Don't use this when deploying to multiple web servers (then you have to terminate SSL at your load balancer).
 #
-# proxy:
-#   ssl: true
-#   host: app.example.com
+proxy:
+  ssl: true
+  host: app.yejo.co.kr
 
 # Where you keep your container images.
 registry:
   # Alternatives: hub.docker.com / registry.digitalocean.com / ghcr.io / ...
-  server: localhost:5555
+  server: registry.hub.docker.com
+  username: rednjzz
+  password:
+    - KAMAL_REGISTRY_PASSWORD
 
   # Needed for authenticated registries.
   # username: your-user
@@ -83,7 +86,7 @@ aliases:
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 # Recommended to change this to a mounted volume path that is backed up off server.
 volumes:
-  - "react_starter_kit_storage:/rails/storage"
+  - "flow_storage:/rails/storage"
 
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
@@ -99,7 +102,7 @@ builder:
   # dockerfile: Dockerfile-ssr
   cache:
     type: registry
-    image: your-user/react_starter_kit-build-cache
+    image: rednjzz/flow-build-cache
     options: mode=max
 
   # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
