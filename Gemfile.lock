@@ -118,7 +118,7 @@ GEM
     drb (2.2.3)
     dry-cli (1.4.1)
     ed25519 (1.4.0)
-    erb (6.0.2)
+    erb (6.0.3)
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
@@ -134,7 +134,7 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    inertia_rails (3.20.0)
+    inertia_rails (3.21.0)
       railties (>= 6)
     io-console (0.8.2)
     irb (1.17.0)
@@ -181,7 +181,7 @@ GEM
     marcel (1.1.0)
     matrix (0.4.3)
     mini_mime (1.1.5)
-    minitest (6.0.3)
+    minitest (6.0.4)
       drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.0)
@@ -277,7 +277,7 @@ GEM
       tsort (>= 0.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)
@@ -433,7 +433,7 @@ DEPENDENCIES
   capybara-lockstep
   debug
   factory_bot_rails
-  inertia_rails (~> 3.6)
+  inertia_rails (~> 3.21)
   jbuilder
   js-routes
   kamal
