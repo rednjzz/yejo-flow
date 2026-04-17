@@ -7,7 +7,7 @@ image: rednjzz/flow
 # Deploy to these servers.
 servers:
   web:
-    - 206.189.36.128
+    - 147.182.165.112
 
   # Uncomment to enable SSR:
   # vite_ssr:
