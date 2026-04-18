@@ -14,6 +14,7 @@
 | `Task` | 세부공종 / 작업 | Phase 하위의 구체적 작업 항목 |
 | `Contract` | 계약 | 원도급·하도급 계약 |
 | `ContractItem` | 내역항목 | 계약 내 개별 공종·품목 (단가·수량 포함) |
+| `Subcontractor` | 하도급자 | 하도급 계약 당사자 |
 | `ProgressBilling` | 기성 | 공사 진행에 따른 대금 청구 |
 | `DesignChange` | 설계변경 | 설계 도면·내역 변경 및 정산 |
 | `DailySiteLog` | 현장공사일지 | 일일 공사 현황 기록 |
