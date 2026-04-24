@@ -4,7 +4,7 @@
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^4.2.3",
     "@eslint/js": "^10.0.1",
-    "@rolldown/plugin-babel": "^0.2.2",
+    "@rolldown/plugin-babel": "^0.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^10.2.0",
